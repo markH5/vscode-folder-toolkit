@@ -1,28 +1,29 @@
-import typescriptEslint from "@typescript-eslint/eslint-plugin";
-import tsParser from "@typescript-eslint/parser";
+// @ts-check
+import antfu from '@antfu/eslint-config';
+import sonarjs from 'eslint-plugin-sonarjs';
 
-export default [{
-    files: ["**/*.ts"],
-}, {
-    plugins: {
-        "@typescript-eslint": typescriptEslint,
-    },
-
-    languageOptions: {
-        parser: tsParser,
-        ecmaVersion: 2022,
-        sourceType: "module",
-    },
-
+const config = antfu({
+    // react: true,
+    stylistic: false,
+    ignores: [
+        'tsconfig.json',
+    ],
     rules: {
-        "@typescript-eslint/naming-convention": ["warn", {
-            selector: "import",
-            format: ["camelCase", "PascalCase"],
-        }],
-
-        curly: "warn",
-        eqeqeq: "warn",
-        "no-throw-literal": "warn",
-        semi: "warn",
+        'ts/consistent-type-definitions': ['error', 'type'],
+        'no-console': 'off',
+        'node/prefer-global/process': 'off',
     },
-}];
+});
+
+export default [
+    ...await config,
+    sonarjs.configs.recommended, // https://github.com/SonarSource/SonarJS/blob/master/packages/jsts/src/rules/README.md#for-eslint-9
+    {
+        'rules': {
+            'sonarjs/no-commented-code': 'off',
+        },
+    },
+];
+
+// https://github.com/antfu/eslint-config?tab=readme-ov-file#view-what-rules-are-enabled
+// pnpm dlx @eslint/config-inspector
