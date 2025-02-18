@@ -12,6 +12,7 @@ const config = antfu({
         'ts/consistent-type-definitions': ['error', 'type'],
         'no-console': 'off',
         'node/prefer-global/process': 'off',
+        'no-restricted-syntax': 'off',
     },
 });
 

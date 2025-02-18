@@ -34,15 +34,23 @@
     "contributes": {
         "commands": [
             {
-                "command": "vscode-folder-toolkit.helloWorld",
-                "title": "Hello World"
+                "command": "vscode-folder-toolkit.getHash",
+                "title": "folder-toolkit:getHash"
             }
-        ]
+        ],
+        "menus": {
+            "explorer/context": [
+                {
+                    "command": "vscode-folder-toolkit.getHash",
+                    "when": "explorerViewletVisible"
+                }
+            ]
+        }
     },
     "scripts": {
         "vscode:prepublish": "pnpm run package",
         "compile": "pnpm run check-types && pnpm run lint && node esbuild.js",
-        "watch": "npm-run-all -p watch:*",
+        "watch": "pnpm run \"/^watch:.*/\"",
         "watch:esbuild": "node esbuild.js --watch",
         "watch:tsc": "tsc --noEmit --watch --project tsconfig.json",
         "package": "pnpm run check-types && pnpm run lint && node esbuild.js --production",
@@ -57,6 +65,9 @@
         "up": "dprint config update && pnpm up -L",
         "fmt": "dprint fmt",
         "run_nolyfill": "pnpm dlx nolyfill install"
+    },
+    "dependencies": {
+        "@node-rs/xxhash": "^1.7.6"
     },
     "devDependencies": {
         "@antfu/eslint-config": "^4.2.0",
@@ -74,8 +85,6 @@
         "eslint": "^9.20.1",
         "eslint-plugin-sonarjs": "^3.0.2",
         "husky": "^9.1.7",
-        "npm-run-all": "^4.1.5",
-        "npm-run-all2": "^7.0.2",
         "tsx": "^4.19.2",
         "typescript": "^5.7.3"
     },
@@ -85,12 +94,19 @@
     },
     "pnpm": {
         "onlyBuiltDependencies": [
-            "esbuild"
+            "@vscode/vsce-sign",
+            "dprint",
+            "esbuild",
+            "keytar"
         ],
         "overrides": {
+            "array-includes": "npm:@nolyfill/array-includes@^1",
+            "array.prototype.flat": "npm:@nolyfill/array.prototype.flat@^1",
             "es-set-tostringtag": "npm:@nolyfill/es-set-tostringtag@^1",
             "is-core-module": "npm:@nolyfill/is-core-module@^1",
             "isarray": "npm:@nolyfill/isarray@^1",
+            "object.assign": "npm:@nolyfill/object.assign@^1",
+            "object.values": "npm:@nolyfill/object.values@^1",
             "safe-buffer": "npm:@nolyfill/safe-buffer@^1",
             "safer-buffer": "npm:@nolyfill/safer-buffer@^1",
             "side-channel": "npm:@nolyfill/side-channel@^1",
