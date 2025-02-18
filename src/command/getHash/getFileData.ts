@@ -1,29 +1,46 @@
 /* eslint-disable node/prefer-global/buffer */
+import { createHash } from 'node:crypto';
 import { statSync } from 'node:fs';
 import { readFile } from 'node:fs/promises';
+import { crc32 } from '@node-rs/crc32';
 import { xxh32, xxh64 } from '@node-rs/xxhash';
 import { fmtFileSize } from './fmtFileSize';
 
+
 export type THash =
+    // node/rs
     | 'crc32'
     | 'xxh64'
     | 'xxh32'
+    // node
+    | 'sha1'
+    | 'sha256'
     | 'md5';
 
-function fmtHexStr(hash: number | bigint): string {
-    const hex: string = hash.toString(16).toUpperCase();
-    return hex.length % 2 === 0
-        ? hex
-        : `0${hex}`;
+// 7z
+// Supported methods: CRC32, CRC64, MD5, SHA1, SHA256, SHA384, SHA512, SHA3 - 256, XXH64, BLAKE2sp.Default method is CRC32.
+
+function ndoeCrypto(s: Buffer<ArrayBufferLike>, fn: string): string {
+    return createHash(fn)
+        .update(s)
+        .digest('hex');
 }
 
-async function get_file_hash<T extends THash>(fsPath: string, fn: T): Promise<string> {
+
+function fmtHexStr(hash: number | bigint, minLen: number): string {
+    return hash
+        .toString(16)
+        .toUpperCase()
+        .padStart(minLen, '0');
+}
+
+async function get_file_hash(fsPath: string, fn: THash): Promise<string> {
     try {
         const s: Buffer<ArrayBufferLike> = await readFile(fsPath);
-        if (fn === 'xxh64') return fmtHexStr(xxh64(s));
-        if (fn === 'xxh32') return fmtHexStr(xxh32(s));
-
-        return 'this method is not provided';
+        if (fn === 'xxh64') return fmtHexStr(xxh64(s), 16);
+        if (fn === 'xxh32') return fmtHexStr(xxh32(s), 8);
+        if (fn === 'crc32') return fmtHexStr(crc32(s), 8);
+        return ndoeCrypto(s, fn);
     } catch (error) {
         console.error('get hash error', error);
         return 'get hash error';

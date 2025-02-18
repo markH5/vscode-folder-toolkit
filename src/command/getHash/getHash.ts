@@ -1,4 +1,3 @@
-import { dump, load } from 'js-yaml';
 import * as vscode from 'vscode';
 import { getfsPathListEx } from '../../fsTools/getfsPathListEx';
 import { sum } from '../../Math/sum';
@@ -18,30 +17,27 @@ export async function getHash(_file: vscode.Uri, selectedFiles: vscode.Uri[]): P
         /\/\.git(?:\/|$)/u,
         /\/node_modules(?:\/|$)/u,
     ];
-    const select: readonly string[] = selectedFiles.map((u): string => u.fsPath);
+    const select: readonly string[] = selectedFiles.map((u): string => u.fsPath.replaceAll('\\', '/'));
     const { need, notNeed } = getfsPathListEx(select, blockList);
 
 
     // if search > 50 show
 
-    const fn = 'xxh64';
+    const fn = 'sha256';
     const datas = await getFileData([...need], fn);
 
-    const list = datas.map(v => v.Bytes);
+    const list: number[] = datas.map(v => v.Bytes);
     const totalSize: string = fmtFileSize(sum(list), 2);
-    const totalFile = list.length;
+    const totalFile: number = list.length;
     const t2: number = Date.now();
     const useMs: number = t2 - t1;
 
     // -------
     const comment: string[] = [
-        '0. not comment now',
+        '1. not comment now',
     ];
 
-    const excluded: Record<string, {
-        fullPath: string;
-        regexp: string;
-    }[]> = {};
+    const excluded: Record<string, { fullPath: string; regexp: string; }[]> = {};
     notNeed.forEach((v, k) => (excluded[k] = v));
     const excludedRules = blockList.map((r: RegExp): string => r.toString());
 
@@ -52,7 +48,6 @@ export async function getHash(_file: vscode.Uri, selectedFiles: vscode.Uri[]): P
     } as const;
 
     const jsonStr: string = JSON.stringify(json, null, 4);
-    const yamlStr: string = dump(load(jsonStr));
     const mdStr: string = ((): string => {
         const arr: string[] = [
             "## footer ",
@@ -88,7 +83,6 @@ export async function getHash(_file: vscode.Uri, selectedFiles: vscode.Uri[]): P
 
     await Promise.all([
         openAndShow('jsonc', jsonStr),
-        openAndShow('yaml', yamlStr),
         openAndShow('markdown', mdStr),
     ]);
 }
