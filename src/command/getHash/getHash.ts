@@ -1,13 +1,18 @@
 import { normalize } from 'node:path/posix';
+import { dump, load } from 'js-yaml';
 import * as vscode from 'vscode';
 import { getfsPathList } from '../../fsTools/getUriList';
 import { sum } from '../../Math/sum';
 import { fmtFileSize } from './fmtFileSize';
 import { getFileData } from './getFileData';
 
-export async function getHash(_file: vscode.Uri, selectedFiles: vscode.Uri[]): Promise<void> {
-    //
+async function openAndShow(language: string, content: string): Promise<vscode.TextEditor> {
+    return vscode.workspace
+        .openTextDocument({ language, content })
+        .then((v) => vscode.window.showTextDocument(v));
+}
 
+export async function getHash(_file: vscode.Uri, selectedFiles: vscode.Uri[]): Promise<void> {
     const t1 = Date.now();
     const blockList: readonly RegExp[] = [
         /\/\.svn\//u,
@@ -18,42 +23,33 @@ export async function getHash(_file: vscode.Uri, selectedFiles: vscode.Uri[]): P
         .map((u): string => normalize(u.fsPath).replaceAll('\\', '/'));
 
     const search: readonly string[] = getfsPathList(select, blockList);
-    // if search > 50 show 
-
+    // if search > 50 show
 
     const data = await getFileData(search, 'xxh64');
 
-    const l = data.map(v => v.sizeRaw);
-    const totalSize: string = fmtFileSize(sum(l), 2);
-    const totalFile = l.length;
-    const t2 = Date.now();
-    const useMs = t2 - t1;
+    const list = data.map(v => v.sizeRaw);
+    const totalSize: string = fmtFileSize(sum(list), 2);
+    const totalFile = list.length;
+    const t2: number = Date.now();
+    const useMs: number = t2 - t1;
 
-    const docOut: vscode.TextDocument = await vscode.workspace.openTextDocument({
-        language: 'jsonc',
-        content: JSON.stringify(
-            [
-                {
-                    head: {
-                        comment: [
-                            '0. 備註 XXX',
-                        ],
-                        select,
-                    },
-                    body: {
-                        search,
-                        data,
-                    },
-                    footer: {
-                        useMs,
-                        totalSize,
-                        totalFile
-                    }
-                },
-            ],
-            null,
-            4,
-        ),
-    });
-    await vscode.window.showTextDocument(docOut);
+    const comment: string[] = [
+        '0. not comment now',
+    ];
+    const jsonStr: string = JSON.stringify(
+        {
+            head: { comment, select },
+            body: { search, data },
+            footer: { useMs, totalSize, totalFile },
+        },
+        null,
+        4,
+    );
+
+    const yamlStr = dump(load(jsonStr));
+
+    await Promise.all([
+        openAndShow('jsonc', jsonStr),
+        openAndShow('yaml', yamlStr),
+    ]);
 }

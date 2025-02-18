@@ -1,3 +1,4 @@
+/* eslint-disable node/prefer-global/buffer */
 import { statSync } from 'node:fs';
 import { readFile } from 'node:fs/promises';
 import { xxh64 } from '@node-rs/xxhash';
@@ -10,20 +11,19 @@ export type THash =
 
 async function get_file_hash<T extends THash>(fsPath: string, fn: T): Promise<string> {
     try {
-        const s = await readFile(fsPath);
+        const s: Buffer<ArrayBufferLike> = await readFile(fsPath);
         if (fn === 'xxh64') {
             const hash = xxh64(s);
-            return hash.toString();
+            return hash.toString(16).toUpperCase();
         }
 
         const hash = xxh64(s);
-        return hash.toString();
+        return hash.toString(16).toUpperCase();
     } catch (error) {
         console.error('get hash error', error);
         return 'get hash error';
     }
 }
-
 
 export async function getFileData<T extends THash>(fileList: readonly string[], fn: T): Promise<(
     {
