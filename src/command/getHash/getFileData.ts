@@ -10,20 +10,20 @@ export type THash =
     | 'xxh32'
     | 'md5';
 
+function fmtHexStr(hash: number | bigint): string {
+    const hex: string = hash.toString(16).toUpperCase();
+    return hex.length % 2 === 0
+        ? hex
+        : `0${hex}`;
+}
+
 async function get_file_hash<T extends THash>(fsPath: string, fn: T): Promise<string> {
     try {
         const s: Buffer<ArrayBufferLike> = await readFile(fsPath);
-        if (fn === 'xxh64') {
-            const hash = xxh64(s);
-            return hash.toString(16).toUpperCase();
-        }
-        if (fn === 'xxh32') {
-            const hash = xxh32(s);
-            return hash.toString(16).toUpperCase();
-        }
+        if (fn === 'xxh64') return fmtHexStr(xxh64(s));
+        if (fn === 'xxh32') return fmtHexStr(xxh32(s));
 
-        const hash = xxh64(s);
-        return hash.toString(16).toUpperCase();
+        return 'this method is not provided';
     } catch (error) {
         console.error('get hash error', error);
         return 'get hash error';
@@ -34,25 +34,23 @@ export async function getFileData<T extends THash>(fileList: readonly string[], 
     {
         path: string,
         size: string,
-        sizeRaw: number,
+        Bytes: number,
         hash: {
-            [key in THash]?: string;
-        }[],
+            k: THash,
+            v: string;
+        },
     }
 )[]> {
     const d1 = fileList.map(
         async (fsPath: string) => {
-            const sizeRaw: number = statSync(fsPath).size;
-            const size: string = fmtFileSize(sizeRaw, 2);
-
+            const Bytes: number = statSync(fsPath).size;
+            const size: string = fmtFileSize(Bytes, 2);
             const hash: string = await get_file_hash(fsPath, fn);
             return ({
                 path: fsPath,
                 size,
-                sizeRaw,
-                hash: [
-                    { [fn]: hash },
-                ],
+                Bytes,
+                hash: { k: fn, v: hash },
             });
         },
     );
