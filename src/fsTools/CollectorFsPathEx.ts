@@ -30,7 +30,7 @@ export function CollectorFsPathEx(
         for (const file of files) {
             const fsPathNext = `${fsPath}/${file}`;
             const needCheckPath: string = fsPathNext.replace(root, '');
-           
+
             const blockRuler: string | undefined = findBlockRuler(needCheckPath, blockList);
             if (blockRuler === undefined) {
                 CollectorFsPathEx(fsPathNext, blockList, Collector, notNeed, root);

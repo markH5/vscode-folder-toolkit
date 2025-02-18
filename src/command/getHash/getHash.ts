@@ -20,10 +20,9 @@ export async function getHash(_file: vscode.Uri, selectedFiles: vscode.Uri[]): P
     const select: readonly string[] = selectedFiles.map((u): string => u.fsPath.replaceAll('\\', '/'));
     const { need, notNeed } = getfsPathListEx(select, blockList);
 
-
     // if search > 50 show
 
-    const fn = 'sha256';
+    const fn = 'xxh64';
     const datas = await getFileData([...need], fn);
 
     const list: number[] = datas.map(v => v.Bytes);
@@ -37,7 +36,7 @@ export async function getHash(_file: vscode.Uri, selectedFiles: vscode.Uri[]): P
         '1. not comment now',
     ];
 
-    const excluded: Record<string, { fullPath: string; regexp: string; }[]> = {};
+    const excluded: Record<string, { fullPath: string, regexp: string }[]> = {};
     notNeed.forEach((v, k) => (excluded[k] = v));
     const excludedRules = blockList.map((r: RegExp): string => r.toString());
 
@@ -50,14 +49,14 @@ export async function getHash(_file: vscode.Uri, selectedFiles: vscode.Uri[]): P
     const jsonStr: string = JSON.stringify(json, null, 4);
     const mdStr: string = ((): string => {
         const arr: string[] = [
-            "## footer ",
-            "",
-            "```json",
+            '## footer ',
+            '',
+            '```json',
             JSON.stringify(json.head, null, 4),
-            "```",
-            "",
-            "## body ",
-            "",
+            '```',
+            '',
+            '## body ',
+            '',
             `| path | size | Bytes | hash(\`${fn}\`) |`,
             `| :--- | ---: | -----: | ---: |`,
         ];
@@ -68,18 +67,17 @@ export async function getHash(_file: vscode.Uri, selectedFiles: vscode.Uri[]): P
         }
 
         arr.push(
-            "",
-            "",
-            "## footer ",
-            "",
-            "```json",
+            '',
+            '',
+            '## footer ',
+            '',
+            '```json',
             JSON.stringify(json.footer, null, 4),
-            "```",
+            '```',
         );
 
-        return arr.join("\n");
+        return arr.join('\n');
     })();
-
 
     await Promise.all([
         openAndShow('jsonc', jsonStr),

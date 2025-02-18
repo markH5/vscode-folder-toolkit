@@ -6,13 +6,12 @@ import { crc32 } from '@node-rs/crc32';
 import { xxh32, xxh64 } from '@node-rs/xxhash';
 import { fmtFileSize } from './fmtFileSize';
 
-
 export type THash =
     // node/rs
     | 'crc32'
     | 'xxh64'
     | 'xxh32'
-    // node
+    // @node-rs/
     | 'sha1'
     | 'sha256'
     | 'md5';
@@ -25,7 +24,6 @@ function ndoeCrypto(s: Buffer<ArrayBufferLike>, fn: string): string {
         .update(s)
         .digest('hex');
 }
-
 
 function fmtHexStr(hash: number | bigint, minLen: number): string {
     return hash
@@ -47,14 +45,14 @@ async function get_file_hash(fsPath: string, fn: THash): Promise<string> {
     }
 }
 
-export async function getFileData<T extends THash>(fileList: readonly string[], fn: T): Promise<(
+export async function getFileData(fileList: readonly string[], fn: THash): Promise<(
     {
         path: string,
         size: string,
         Bytes: number,
         hash: {
             k: THash,
-            v: string;
+            v: string,
         },
     }
 )[]> {
