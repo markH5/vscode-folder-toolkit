@@ -1,12 +1,13 @@
 /* eslint-disable node/prefer-global/buffer */
 import { statSync } from 'node:fs';
 import { readFile } from 'node:fs/promises';
-import { xxh64 } from '@node-rs/xxhash';
+import { xxh32, xxh64 } from '@node-rs/xxhash';
 import { fmtFileSize } from './fmtFileSize';
 
 export type THash =
     | 'crc32'
     | 'xxh64'
+    | 'xxh32'
     | 'md5';
 
 async function get_file_hash<T extends THash>(fsPath: string, fn: T): Promise<string> {
@@ -14,6 +15,10 @@ async function get_file_hash<T extends THash>(fsPath: string, fn: T): Promise<st
         const s: Buffer<ArrayBufferLike> = await readFile(fsPath);
         if (fn === 'xxh64') {
             const hash = xxh64(s);
+            return hash.toString(16).toUpperCase();
+        }
+        if (fn === 'xxh32') {
+            const hash = xxh32(s);
             return hash.toString(16).toUpperCase();
         }
 

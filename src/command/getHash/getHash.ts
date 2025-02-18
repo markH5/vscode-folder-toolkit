@@ -25,7 +25,8 @@ export async function getHash(_file: vscode.Uri, selectedFiles: vscode.Uri[]): P
     const search: readonly string[] = getfsPathList(select, blockList);
     // if search > 50 show
 
-    const data = await getFileData(search, 'xxh64');
+    const fn = 'xxh32';
+    const data = await getFileData(search, fn);
 
     const list = data.map(v => v.sizeRaw);
     const totalSize: string = fmtFileSize(sum(list), 2);
