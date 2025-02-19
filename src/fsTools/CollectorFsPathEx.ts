@@ -1,23 +1,29 @@
 import * as fs from 'node:fs';
 
-export function fsPathIsAllow(fsPath: string, blockList: readonly RegExp[]): boolean {
-    return !blockList.some((reg: RegExp): boolean => reg.test(fsPath));
+
+export type TBlockRuler = {
+    readonly name: string,
+    readonly reg: RegExp,
+};
+
+export function findBlockRuler(fsPath: string, blockList: readonly TBlockRuler[]): TBlockRuler | undefined {
+    return blockList.find((r: TBlockRuler): boolean => r.reg.test(fsPath));
 }
 
-export function findBlockRuler(fsPath: string, blockList: readonly RegExp[]): string | undefined {
-    const reg: RegExp | undefined = blockList.find((reg: RegExp): boolean => reg.test(fsPath));
-    if (reg === undefined) return undefined;
-    return reg.toString();
-}
-
-export type TNotNeed = Map<string, ({
+export type TNotNeedValue = {
     fullPath: string,
-    regexp: string,
-})[]>;
+    ruler: TBlockRuler,
+    root: string,
+};
+
+/**
+ * key = ruler-name
+ */
+export type TNotNeed = Map<string, TNotNeedValue[]>;
 
 export function CollectorFsPathEx(
     fsPath: string,
-    blockList: readonly RegExp[],
+    blockList: readonly TBlockRuler[],
     Collector: Set<string>,
     notNeed: TNotNeed,
     root: string,
@@ -31,16 +37,17 @@ export function CollectorFsPathEx(
             const fsPathNext = `${fsPath}/${file}`;
             const needCheckPath: string = fsPathNext.replace(root, '');
 
-            const blockRuler: string | undefined = findBlockRuler(needCheckPath, blockList);
+            const blockRuler: TBlockRuler | undefined = findBlockRuler(needCheckPath, blockList);
             if (blockRuler === undefined) {
                 CollectorFsPathEx(fsPathNext, blockList, Collector, notNeed, root);
             } else {
                 const rejectArr = notNeed.get(needCheckPath) ?? [];
                 rejectArr.push({
                     fullPath: fsPathNext,
-                    regexp: blockRuler,
+                    ruler: blockRuler,
+                    root,
                 });
-                notNeed.set(needCheckPath, rejectArr);
+                notNeed.set(blockRuler.name, rejectArr);
             }
         }
     } else if (Stats.isFile()) {

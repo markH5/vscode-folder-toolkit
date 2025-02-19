@@ -1,3 +1,4 @@
+import type { TBlockRuler, TNotNeedValue } from '../../fsTools/CollectorFsPathEx';
 import type { TF, THash } from './getFileData';
 import { getfsPathListEx } from '../../fsTools/getfsPathListEx';
 import { sum } from '../../Math/sum';
@@ -10,9 +11,10 @@ export type THashReport = {
     json: string,
     md: string;
 };
+
 export async function getHashCore(
     select: readonly string[],
-    blockList: readonly RegExp[],
+    blockList: readonly TBlockRuler[],
     fn: THash,
 ): Promise<THashReport> {
     const timeStart: number = Date.now();
@@ -32,14 +34,24 @@ export async function getHashCore(
         '1. not comment now',
     ];
 
-    const excluded: Record<string, { fullPath: string, regexp: string; }[]> = {};
-    notNeed.forEach((v, k) => (excluded[k] = v));
-    const excludedRules: string[] = blockList.map((r: RegExp): string => r.toString());
+    const excludedRules = blockList.map((r: TBlockRuler) => ({ name: r.name, reg: r.reg.toString() }));
+    const excluded: Record<string, unknown[]> = {};
+
+    notNeed.forEach((rawV: TNotNeedValue[], k: string): void => {
+        const cc = rawV
+            .map((v: TNotNeedValue) => ({
+                fullPath: v.fullPath,
+                root: v.root,
+                ruler: { name: v.ruler.name, reg: v.ruler.reg.toString() },
+            }));
+
+        excluded[k] = cc;
+    });
 
     const json = {
-        header: { comment, select, excludedRules, excluded },
+        header: { comment, select },
         body: { datas },
-        footer: { useMs, totalSize, totalFile },
+        footer: { useMs, totalSize, totalFile, excludedRules, excluded },
     } as const;
 
     return {
