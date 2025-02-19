@@ -9,7 +9,7 @@ import { json2md } from './json2md';
 
 export type THashReport = {
     json: string,
-    md: string;
+    md: string,
 };
 
 export async function getHashCore(

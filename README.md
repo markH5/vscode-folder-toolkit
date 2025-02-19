@@ -10,7 +10,6 @@
 
 ## Extension Settings
 
-
 ---
 
 <!-- TODO

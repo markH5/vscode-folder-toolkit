@@ -10,7 +10,6 @@
     },
     // Turn off tsc task auto detection since we have the necessary tasks as npm scripts
     "typescript.tsc.autoDetect": "off",
-
     // ========== Visuals ==========
     "workbench.editor.tabActionLocation": "left",
     "workbench.tree.expandMode": "singleClick",
@@ -18,7 +17,6 @@
     "editor.wordSeparators": "`~!@#%^&*()=+[{]}\\|;:'\",.<>/?",
     "workbench.editor.closeOnFileDelete": true,
     "workbench.editor.highlightModifiedTabs": true,
-
     // ==========  Global Level Config, needs to put in User Settings ==========
     // Silent the stylistic rules in you IDE, but still auto fix them
     "eslint.rules.customizations": [

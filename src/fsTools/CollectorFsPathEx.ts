@@ -1,6 +1,5 @@
 import * as fs from 'node:fs';
 
-
 export type TBlockRuler = {
     readonly name: string,
     readonly reg: RegExp,
