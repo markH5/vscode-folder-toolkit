@@ -60,7 +60,7 @@
         "watch": "pnpm run \"/^watch:.*/\"",
         "watch:esbuild": "node esbuild.js --watch",
         "watch:tsc": "tsc --noEmit --watch --project tsconfig.json",
-        "package": "pnpm tsc && pnpm run lint && node esbuild.js --production",
+        "package": "pnpm tsc && pnpm run lint && node esbuild.js",
         "just pack": "node esbuild.js",
         "add:lint": "pnpm dlx @eslint/config-inspector",
         "lint": "eslint",
@@ -68,6 +68,9 @@
         "up": "dprint config update && pnpm up -L",
         "fmt": "dprint fmt",
         "run_nolyfill": "pnpm dlx nolyfill install"
+    },
+    "dependencies": {
+        "es-toolkit": "^1.32.0"
     },
     "devDependencies": {
         "@antfu/eslint-config": "^4.3.0",
@@ -108,8 +111,5 @@
             "side-channel": "npm:@nolyfill/side-channel@^1",
             "string.prototype.padend": "npm:@nolyfill/string.prototype.padend@^1"
         }
-    },
-    "dependencies": {
-        "es-toolkit": "^1.32.0"
     }
 }

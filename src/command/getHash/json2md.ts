@@ -1,4 +1,4 @@
-import type { TF } from './getFileData';
+import type { TF } from '../../getFileDataCore';
 
 type TJSON = {
     header: unknown,

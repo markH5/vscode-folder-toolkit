@@ -1,6 +1,6 @@
 const esbuild = require('esbuild');
 
-const production = process.argv.includes('--production');
+// const production = process.argv.includes('--production');
 const watch = process.argv.includes('--watch');
 
 /**
@@ -27,14 +27,15 @@ async function main() {
     const ctx = await esbuild.context({
         entryPoints: [
             'src/extension.ts',
+            'src/getFileDataCore.ts',
         ],
         bundle: true,
         format: 'cjs',
-        minify: production,
-        sourcemap: !production,
-        sourcesContent: false,
+        minify: false,
+        sourcemap: false,
+        //  sourcesContent: false,
         platform: 'node',
-        outfile: 'dist/extension.js',
+        outdir: 'dist',
         external: ['vscode', '@node-rs/xxhash', '@node-rs/crc32'],
         // logLevel: 'silent',
         plugins: [
