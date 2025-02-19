@@ -1,4 +1,6 @@
 /* eslint-disable node/prefer-global/buffer */
+import type { Stats } from 'node:fs';
+import type { ReadonlyDeep } from 'type-fest';
 import { createHash } from 'node:crypto';
 import { statSync } from 'node:fs';
 import { readFile } from 'node:fs/promises';
@@ -45,31 +47,36 @@ async function get_file_hash(fsPath: string, fn: THash): Promise<string> {
     }
 }
 
-export async function getFileData(fileList: readonly string[], fn: THash): Promise<(
-    {
-        path: string,
-        size: string,
-        Bytes: number,
-        hash: {
-            k: THash,
-            v: string,
-        },
-    }
-)[]> {
-    const d1 = fileList.map(
-        async (fsPath: string) => {
-            const Bytes: number = statSync(fsPath).size;
+export type TF = ReadonlyDeep<{
+    path: string,
+    size: string,
+    Bytes: number,
+    mTime: string,
+    hash: {
+        k: THash,
+        v: string,
+    },
+}>;
+
+export async function getFileData(fileList: readonly string[], fn: THash): Promise<readonly TF[]> {
+    const d1: Promise<TF>[] = fileList.map(
+        async (fsPath: string): Promise<TF> => {
+            const stat: Stats = statSync(fsPath);
+            const Bytes: number = stat.size;
+            const mTime: string = stat.mtime.toISOString();
+
             const size: string = fmtFileSize(Bytes, 2);
             const hash: string = await get_file_hash(fsPath, fn);
             return ({
                 path: fsPath,
                 size,
                 Bytes,
+                mTime,
                 hash: { k: fn, v: hash },
             });
         },
     );
 
-    const d2 = await Promise.all(d1);
+    const d2: readonly TF[] = await Promise.all(d1);
     return d2;
 }

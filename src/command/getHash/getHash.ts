@@ -1,8 +1,10 @@
+import type { TF } from './getFileData';
 import * as vscode from 'vscode';
 import { getfsPathListEx } from '../../fsTools/getfsPathListEx';
 import { sum } from '../../Math/sum';
 import { fmtFileSize } from './fmtFileSize';
 import { getFileData } from './getFileData';
+import { json2md } from './json2md';
 
 async function openAndShow(language: string, content: string): Promise<vscode.TextEditor> {
     return vscode.workspace
@@ -11,7 +13,7 @@ async function openAndShow(language: string, content: string): Promise<vscode.Te
 }
 
 export async function getHash(_file: vscode.Uri, selectedFiles: vscode.Uri[]): Promise<void> {
-    const t1: number = Date.now();
+    const timeStart: number = Date.now();
     const blockList: readonly RegExp[] = [
         /\/\.svn(?:\/|$)/u,
         /\/\.git(?:\/|$)/u,
@@ -23,61 +25,31 @@ export async function getHash(_file: vscode.Uri, selectedFiles: vscode.Uri[]): P
     // if search > 50 show
 
     const fn = 'xxh64';
-    const datas = await getFileData([...need], fn);
+    const datas: readonly TF[] = await getFileData([...need], fn);
 
     const list: number[] = datas.map(v => v.Bytes);
     const totalSize: string = fmtFileSize(sum(list), 2);
     const totalFile: number = list.length;
-    const t2: number = Date.now();
-    const useMs: number = t2 - t1;
+    const timeEnd: number = Date.now();
+    const useMs: number = timeEnd - timeStart;
 
     // -------
     const comment: string[] = [
         '1. not comment now',
     ];
 
-    const excluded: Record<string, { fullPath: string, regexp: string }[]> = {};
+    const excluded: Record<string, { fullPath: string, regexp: string; }[]> = {};
     notNeed.forEach((v, k) => (excluded[k] = v));
-    const excludedRules = blockList.map((r: RegExp): string => r.toString());
+    const excludedRules: string[] = blockList.map((r: RegExp): string => r.toString());
 
     const json = {
-        head: { comment, select, excludedRules, excluded },
+        header: { comment, select, excludedRules, excluded },
         body: { datas },
         footer: { useMs, totalSize, totalFile },
     } as const;
 
     const jsonStr: string = JSON.stringify(json, null, 4);
-    const mdStr: string = ((): string => {
-        const arr: string[] = [
-            '## footer ',
-            '',
-            '```json',
-            JSON.stringify(json.head, null, 4),
-            '```',
-            '',
-            '## body ',
-            '',
-            `| path | size | Bytes | hash(\`${fn}\`) |`,
-            `| :--- | ---: | -----: | ---: |`,
-        ];
-        for (const d of datas) {
-            arr.push(
-                `| ${d.path} | ${d.size} | ${d.Bytes} | \`${d.hash.v}\` |`,
-            );
-        }
-
-        arr.push(
-            '',
-            '',
-            '## footer ',
-            '',
-            '```json',
-            JSON.stringify(json.footer, null, 4),
-            '```',
-        );
-
-        return arr.join('\n');
-    })();
+    const mdStr: string = json2md(datas, json);
 
     await Promise.all([
         openAndShow('jsonc', jsonStr),

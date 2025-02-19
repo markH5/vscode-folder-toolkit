@@ -68,7 +68,8 @@
     },
     "dependencies": {
         "@node-rs/crc32": "^1.10.6",
-        "@node-rs/xxhash": "^1.7.6"
+        "@node-rs/xxhash": "^1.7.6",
+        "type-fest": "^4.35.0"
     },
     "devDependencies": {
         "@antfu/eslint-config": "^4.2.0",
