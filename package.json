@@ -7,10 +7,10 @@
     "description": "Quickly calculate the hash of each file in the folder",
     "author": "Coffee Chaton(https://github.com/CoffeeChaton)",
     "license": "MIT",
-    "homepage": "https://github.com/markH5/res_json_help/blob/main/README.md",
-    "repository": "https://github.com/markH5/res_json_help",
+    "homepage": "https://github.com/CoffeeChaton/vscode-folder-toolkit",
+    "repository": "https://github.com/CoffeeChaton/vscode-folder-toolkit",
     "bugs": {
-        "url": "https://github.com/markH5/res_json_help/issues"
+        "url": "https://github.com/CoffeeChaton/vscode-folder-toolkit/issues"
     },
     "keywords": [
         "vscode",

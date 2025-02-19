@@ -36,7 +36,7 @@ async function main() {
         platform: 'node',
         outfile: 'dist/extension.js',
         external: ['vscode', '@node-rs/xxhash', '@node-rs/crc32'],
-        logLevel: 'silent',
+        // logLevel: 'silent',
         plugins: [
             /* add to the end of plugins array */
             esbuildProblemMatcherPlugin,
