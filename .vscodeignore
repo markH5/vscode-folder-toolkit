@@ -12,3 +12,7 @@ vsc-extension-quickstart.md
 **/*.map
 **/*.ts
 **/.vscode-test.*
+
+# https://github.com/microsoft/vscode-vsce/issues/421
+# and --not-dependencies
+pnpm-lock.yaml

@@ -16,7 +16,6 @@
         "vscode",
         "hash",
         "md5",
-        "xxhash",
         "folder tree",
         "folder hash",
         "file hash",
@@ -47,8 +46,17 @@
             ]
         }
     },
+    "vsce": {
+        "baseImagesUrl": "https://github.com/CoffeeChaton/vscode-folder-toolkit/",
+        "baseContentUrl": "https://github.com/CoffeeChaton/vscode-folder-toolkit",
+        "dependencies": false
+    },
+    "sponsor": {
+        "url": "https://github.com/CoffeeChaton/vscode-folder-toolkit"
+    },
     "scripts": {
-        "vscode:prepublish": "pnpm run package",
+        "creat vsix": "pnpm run package && pnpm vsce package",
+        "creat vsix pre release": "pnpm run package && pnpm vsce package --pre-release",
         "compile": "pnpm run check-types && pnpm run lint && node esbuild.js",
         "watch": "pnpm run \"/^watch:.*/\"",
         "watch:esbuild": "node esbuild.js --watch",
@@ -66,11 +74,7 @@
         "fmt": "dprint fmt",
         "run_nolyfill": "pnpm dlx nolyfill install"
     },
-    "dependencies": {
-        "@node-rs/crc32": "^1.10.6",
-        "@node-rs/xxhash": "^1.7.6",
-        "type-fest": "^4.35.0"
-    },
+    "dependencies": {},
     "devDependencies": {
         "@antfu/eslint-config": "^4.2.0",
         "@eslint/eslintrc": "^3.2.0",
@@ -88,6 +92,7 @@
         "eslint-plugin-sonarjs": "^3.0.2",
         "husky": "^9.1.7",
         "tsx": "^4.19.2",
+        "type-fest": "^4.35.0",
         "typescript": "^5.7.3"
     },
     "galleryBanner": {
