@@ -61,6 +61,7 @@
         "watch:esbuild": "node esbuild.js --watch",
         "watch:tsc": "tsc --noEmit --watch --project tsconfig.json",
         "package": "pnpm tsc && pnpm run lint && node esbuild.js --production",
+        "just pack": "node esbuild.js",
         "add:lint": "pnpm dlx @eslint/config-inspector",
         "lint": "eslint",
         "lint:fix": "pnpm run fmt && eslint . --fix && pnpm run fmt && pnpm tsc && node esbuild.js",
@@ -70,7 +71,6 @@
     },
     "devDependencies": {
         "@antfu/eslint-config": "^4.3.0",
-        "@eslint/eslintrc": "^3.2.0",
         "@types/node": "~22.13.4",
         "@types/vscode": "^1.97.0",
         "@typescript-eslint/eslint-plugin": "^8.24.1",
@@ -108,5 +108,8 @@
             "side-channel": "npm:@nolyfill/side-channel@^1",
             "string.prototype.padend": "npm:@nolyfill/string.prototype.padend@^1"
         }
+    },
+    "dependencies": {
+        "es-toolkit": "^1.32.0"
     }
 }

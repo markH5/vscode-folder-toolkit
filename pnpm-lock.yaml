@@ -5,28 +5,29 @@ settings:
   excludeLinksFromLockfile: false
 
 overrides:
+  array-includes: npm:@nolyfill/array-includes@^1
+  array.prototype.flat: npm:@nolyfill/array.prototype.flat@^1
   es-set-tostringtag: npm:@nolyfill/es-set-tostringtag@^1
   is-core-module: npm:@nolyfill/is-core-module@^1
   isarray: npm:@nolyfill/isarray@^1
+  object.assign: npm:@nolyfill/object.assign@^1
+  object.values: npm:@nolyfill/object.values@^1
   safe-buffer: npm:@nolyfill/safe-buffer@^1
   safer-buffer: npm:@nolyfill/safer-buffer@^1
   side-channel: npm:@nolyfill/side-channel@^1
   string.prototype.padend: npm:@nolyfill/string.prototype.padend@^1
-  array-includes: npm:@nolyfill/array-includes@^1
-  array.prototype.flat: npm:@nolyfill/array.prototype.flat@^1
-  object.assign: npm:@nolyfill/object.assign@^1
-  object.values: npm:@nolyfill/object.values@^1
 
 importers:
 
   .:
+    dependencies:
+      es-toolkit:
+        specifier: ^1.32.0
+        version: 1.32.0
     devDependencies:
       '@antfu/eslint-config':
         specifier: ^4.3.0
         version: 4.3.0(@typescript-eslint/utils@8.24.1(eslint@9.20.1)(typescript@5.7.3))(@vue/compiler-sfc@3.5.13)(eslint@9.20.1)(typescript@5.7.3)
-      '@eslint/eslintrc':
-        specifier: ^3.2.0
-        version: 3.2.0
       '@types/node':
         specifier: ~22.13.4
         version: 22.13.4
@@ -1008,6 +1009,9 @@ packages:
 
   es-module-lexer@1.6.0:
     resolution: {integrity: sha512-qqnD1yMU6tk/jnaMosogGySTZP8YtUgAffA9nMN+E/rjxcfRQ6IEk7IiozUjgxKoFHBGjTLnrHB/YC45r/59EQ==}
+
+  es-toolkit@1.32.0:
+    resolution: {integrity: sha512-ZfSfHP1l6ubgW/B/FRtqb9bYdMvI6jizbOSfbwwJNcOQ1QE6TFsC3jpQkZ900uUPSR3t3SU5Ds7UWKnYz+uP8Q==}
 
   esbuild@0.25.0:
     resolution: {integrity: sha512-BXq5mqc8ltbaN34cDqWuYKyNhX8D/Z0J1xdtdQ8UcIIIyJyz+ZMKUt58tF3SrZ85jcfN/PZYhjR5uDQAYNVbuw==}
@@ -3206,6 +3210,8 @@ snapshots:
   entities@4.5.0: {}
 
   es-module-lexer@1.6.0: {}
+
+  es-toolkit@1.32.0: {}
 
   esbuild@0.25.0:
     optionalDependencies:

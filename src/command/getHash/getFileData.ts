@@ -7,6 +7,8 @@ import { readFile } from 'node:fs/promises';
 // import { crc32 } from '@node-rs/crc32';
 // import { xxh32, xxh64 } from '@node-rs/xxhash';
 import { fmtFileSize } from './fmtFileSize';
+import { chunk } from 'es-toolkit/array';
+
 
 export type THash =
     // @node-rs/
@@ -56,24 +58,33 @@ export type TF = ReadonlyDeep<{
 }>;
 
 export async function getFileData(fileList: readonly string[], fn: THash): Promise<readonly TF[]> {
-    const d1: Promise<TF>[] = fileList.map(
-        async (fsPath: string): Promise<TF> => {
-            const stat: Stats = statSync(fsPath);
-            const Bytes: number = stat.size;
-            const mTime: string = stat.mtime.toISOString();
+    // https://stackoverflow.com/questions/8965606/node-and-error-emfile-too-many-open-files
+    const arrchunk: string[][] = chunk(fileList, 1024);
+    // console.log("🚀 ~ arrchunk.length", arrchunk.length);
+    // console.log("🚀 ~ fileList.length", fileList.length);
 
-            const size: string = fmtFileSize(Bytes, 2);
-            const hash: string = await get_file_hash(fsPath, fn);
-            return ({
-                path: fsPath,
-                size,
-                Bytes,
-                mTime,
-                hash: { k: fn, v: hash },
-            });
-        },
-    );
+    const need: TF[] = [];
+    for (const arr of arrchunk) {
+        const d1: Promise<TF>[] = arr.map(
+            async (fsPath: string): Promise<TF> => {
+                const stat: Stats = statSync(fsPath);
+                const Bytes: number = stat.size;
+                const mTime: string = stat.mtime.toISOString();
 
-    const d2: readonly TF[] = await Promise.all(d1);
-    return d2;
+                const size: string = fmtFileSize(Bytes, 2);
+                const hash: string = await get_file_hash(fsPath, fn);
+                return ({
+                    path: fsPath,
+                    size,
+                    Bytes,
+                    mTime,
+                    hash: { k: fn, v: hash },
+                });
+            },
+        );
+        const d2: readonly TF[] = await Promise.all(d1);
+        need.push(...d2);
+    }
+
+    return need;
 }
