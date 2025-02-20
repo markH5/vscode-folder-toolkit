@@ -1,4 +1,4 @@
-import type { TF } from './getFileDataCore';
+import type { TReport } from './getFileDataCore';
 
 type TJSON = {
     header: unknown,
@@ -6,7 +6,7 @@ type TJSON = {
     footer: unknown,
 };
 
-export function json2md(datas: readonly TF[], json: TJSON): string {
+export function json2md(datas: readonly TReport[], json: TJSON): string {
     const arr: string[] = [
         '## head ',
         '',
@@ -18,9 +18,9 @@ export function json2md(datas: readonly TF[], json: TJSON): string {
         '',
     ];
 
-    const ln1: number = Math.max(...datas.map((v: TF): number => v.path.length));
-    const ln2: number = Math.max(...datas.map((v: TF): number => v.size.length));
-    const ln3: number = Math.max(...datas.map((v: TF): number => v.Bytes.toString().length));
+    const ln1: number = Math.max(...datas.map((v: TReport): number => v.path.length));
+    const ln2: number = Math.max(...datas.map((v: TReport): number => v.size.length));
+    const ln3: number = Math.max(...datas.map((v: TReport): number => v.Bytes.toString().length));
     const ln4: number = datas[0].hash.v.length;
     const ln5: number = datas[0].mTime.length;
     {

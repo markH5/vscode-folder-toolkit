@@ -1,5 +1,7 @@
 import type { TBlockRuler } from '../../fsTools/CollectorFsPathEx';
 import * as vscode from 'vscode';
+import { name } from '../../../package.json';
+import { safeParserConfig0 } from '../../configUI';
 import { getHashCore } from './getHashCore';
 
 async function openAndShow(language: string, content: string): Promise<vscode.TextEditor> {
@@ -12,6 +14,37 @@ async function openAndShow(language: string, content: string): Promise<vscode.Te
 
 export async function getHashVsc(_file: vscode.Uri, selectedFiles: vscode.Uri[]): Promise<void> {
     const select: readonly string[] = selectedFiles.map((u): string => u.fsPath.replaceAll('\\', '/'));
+
+    const allConfig = vscode.workspace.getConfiguration(name);
+    const Configs: unknown = allConfig.get<unknown>('hashToolkitConfig');
+    if (!Array.isArray(Configs)) {
+        vscode.window.showErrorMessage(`${name}.hashToolkitConfig should be an array`);
+        return;
+    }
+
+    for (const config of Configs) {
+        const c = safeParserConfig0(config);
+        if (!c.success) {
+            vscode.window.showErrorMessage(`${name}.hashToolkitConfig some config is invalid`);
+            const md = [
+                '# input config',
+                '',
+                '```json',
+                JSON.stringify(config, null, 2),
+                '```',
+                '',
+                '# error',
+                '',
+                '```json',
+                JSON.stringify(c, null, 2),
+                '```',
+            ].join('\n');
+
+            openAndShow('markdown', md);
+            return;
+        }
+    }
+
     const blockList: readonly TBlockRuler[] = [
         {
             name: 'not node_modules',

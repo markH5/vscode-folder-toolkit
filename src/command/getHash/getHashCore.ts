@@ -1,5 +1,6 @@
+import type { THash } from '../../configUI.data';
 import type { TBlockRuler, TNotNeed, TNotNeedValue } from '../../fsTools/CollectorFsPathEx';
-import type { TF, THash } from './getFileDataCore';
+import type { TReport } from './getFileDataCore';
 import { homepage, repository, version } from '../../../package.json';
 import { getfsPathListEx } from '../../fsTools/getfsPathListEx';
 import { sum } from '../../Math/sum';
@@ -41,7 +42,7 @@ export async function getHashCore(
     const { need, notNeed } = getfsPathListEx(select, blockList);
     // if search > 50 show
 
-    const datas: readonly TF[] = await getFileDataCoreEx(need, fn);
+    const datas: readonly TReport[] = await getFileDataCoreEx(need, fn);
 
     const list: number[] = datas.map(v => v.Bytes);
     const totalSize: string = fmtFileSize(sum(list), 2);

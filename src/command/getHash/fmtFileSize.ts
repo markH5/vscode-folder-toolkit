@@ -1,4 +1,4 @@
-const sizesMap = ['Bytes', 'KB', 'MB', 'GB', 'TB'] as const;
+const sizesMap = ['Bytes', 'KiB', 'MiB', 'GiB', 'TiB'] as const;
 
 export function fmtFileSize(bytes: number, toFixed: number): string {
     if (bytes === 0) return '0 Bytes';

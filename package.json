@@ -1,7 +1,7 @@
 {
     "publisher": "cat1122",
     "name": "vscode-folder-toolkit",
-    "displayName": "vscode-folder-toolkit",
+    "displayName": "a vscode-folder-toolkit",
     "version": "0.0.1",
     "packageManager": "pnpm@10.4.0",
     "description": "Quickly calculate the hash of each file in the folder",
@@ -13,9 +13,8 @@
         "url": "https://github.com/CoffeeChaton/vscode-folder-toolkit/issues"
     },
     "keywords": [
-        "vscode",
         "hash",
-        "md5",
+        "md5 sha1 sha256",
         "folder tree",
         "folder hash",
         "file hash",
@@ -35,6 +34,52 @@
             {
                 "command": "vscode-folder-toolkit.getHash",
                 "title": "folder-toolkit:getHash"
+            }
+        ],
+        "configuration": [
+            {
+                "type": "object",
+                "title": "1. file/folder hash",
+                "properties": {
+                    "vscode-folder-toolkit.hashToolkitConfig": {
+                        "order": 0,
+                        "type": "array",
+                        "default": [
+                            {
+                                "name": "default:0 not git/node_modules",
+                                "fn": "md5",
+                                "report": "both",
+                                "blockList": [
+                                    {
+                                        "name": "not node_modules",
+                                        "reg": "\\/node_modules(?:\\/|$)"
+                                    },
+                                    {
+                                        "name": "not .git",
+                                        "reg": "\\/\\.git(?:\\/|$)"
+                                    },
+                                    {
+                                        "name": "not .svn",
+                                        "reg": "\\/\\.svn(?:\\/|$)"
+                                    }
+                                ]
+                            }
+                        ],
+                        "markdownDescription": "not now"
+                    }
+                }
+            },
+            {
+                "type": "object",
+                "title": "2. TODO",
+                "properties": {
+                    "vscode-folder-toolkit.TODO": {
+                        "order": 0,
+                        "type": "boolean",
+                        "default": false,
+                        "markdownDescription": "not now"
+                    }
+                }
             }
         ],
         "menus": {
@@ -58,20 +103,22 @@
         "creat_vsix_release": "pnpm run package && pnpm vsce package",
         "creat_vsix_pre_release": "pnpm run package && pnpm vsce package --pre-release",
         "watch": "pnpm run \"/^watch:.*/\"",
-        "watch:esbuild": "node esbuild.js --watch",
+        "watch:esbuild": "node --watch esbuild.js --watch",
         "watch:tsc": "tsc --noEmit --watch --project tsconfig.json",
-        "package": "pnpm tsc && pnpm run lint && node esbuild.js",
+        "watch:vitest": "pnpm vitest watch",
         "just pack": "node esbuild.js",
         "add:lint": "pnpm dlx @eslint/config-inspector",
+        "test": "vitest run",
         "lint": "eslint",
-        "lint:fix": "pnpm run fmt && eslint . --fix && pnpm run fmt && pnpm tsc && node esbuild.js",
+        "package": "pnpm tsc & pnpm run test & pnpm run fmt & eslint . --fix && pnpm run fmt && node esbuild.js",
         "up": "dprint config update && pnpm up -L",
         "fmt": "dprint fmt",
         "run_nolyfill": "pnpm dlx nolyfill install",
         "prepare": "husky"
     },
     "dependencies": {
-        "es-toolkit": "^1.32.0"
+        "es-toolkit": "^1.32.0",
+        "valibot": "1.0.0-rc.1"
     },
     "devDependencies": {
         "@antfu/eslint-config": "^4.3.0",
@@ -86,7 +133,8 @@
         "eslint-plugin-sonarjs": "^3.0.2",
         "husky": "^9.1.7",
         "type-fest": "^4.35.0",
-        "typescript": "^5.7.3"
+        "typescript": "^5.7.3",
+        "vitest": "^3.0.6"
     },
     "galleryBanner": {
         "color": "#b09df5",
