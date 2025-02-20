@@ -25,9 +25,6 @@ export async function getHashVsc(_file: vscode.Uri, selectedFiles: vscode.Uri[])
             name: 'not .svn',
             reg: /\/\.svn(?:\/|$)/u,
         },
-        // /\/\.svn(?:\/|$)/u,
-        // /\/\.git(?:\/|$)/u,
-        // /\/node_modules(?:\/|$)/u,
     ];
 
     const { json, md } = await getHashCore(select, blockList, 'md5');

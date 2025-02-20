@@ -55,8 +55,8 @@
         "url": "https://github.com/CoffeeChaton/vscode-folder-toolkit"
     },
     "scripts": {
-        "creat vsix release": "pnpm run package && pnpm vsce package",
-        "creat vsix pre release": "pnpm run package && pnpm vsce package --pre-release",
+        "creat_vsix_release": "pnpm run package && pnpm vsce package",
+        "creat_vsix_pre_release": "pnpm run package && pnpm vsce package --pre-release",
         "watch": "pnpm run \"/^watch:.*/\"",
         "watch:esbuild": "node esbuild.js --watch",
         "watch:tsc": "tsc --noEmit --watch --project tsconfig.json",
@@ -67,7 +67,8 @@
         "lint:fix": "pnpm run fmt && eslint . --fix && pnpm run fmt && pnpm tsc && node esbuild.js",
         "up": "dprint config update && pnpm up -L",
         "fmt": "dprint fmt",
-        "run_nolyfill": "pnpm dlx nolyfill install"
+        "run_nolyfill": "pnpm dlx nolyfill install",
+        "prepare": "husky"
     },
     "dependencies": {
         "es-toolkit": "^1.32.0"

@@ -2,10 +2,9 @@ import type { TBlockRuler, TNotNeed } from './CollectorFsPathEx';
 import { normalize } from 'node:path';
 import { CollectorFsPathEx } from './CollectorFsPathEx';
 
-
 export type TSearch = {
-    readonly need: readonly string[];
-    readonly notNeed: TNotNeed;
+    readonly need: readonly string[],
+    readonly notNeed: TNotNeed,
 };
 
 export function getfsPathListEx(
