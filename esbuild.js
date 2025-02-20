@@ -27,7 +27,6 @@ async function main() {
     const ctx = await esbuild.context({
         entryPoints: [
             'src/extension.ts',
-            'src/getFileDataCore.ts',
         ],
         bundle: true,
         format: 'cjs',

@@ -4,9 +4,8 @@ import type { ReadonlyDeep } from 'type-fest';
 import { createHash } from 'node:crypto';
 import { statSync } from 'node:fs';
 import { readFile } from 'node:fs/promises';
-import { parentPort, isMainThread } from 'node:worker_threads';
 import { chunk } from 'es-toolkit';
-import { fmtFileSize } from './command/getHash/fmtFileSize';
+import { fmtFileSize } from './fmtFileSize';
 
 // import { crc32 } from '@node-rs/crc32';
 // import { xxh32, xxh64 } from '@node-rs/xxhash';
@@ -73,7 +72,7 @@ async function creatTF(fsPath: string, fn: THash): Promise<TF> {
  * @param fn {THash}
  * @returns Promise<readonly TF[]>
  */
-export async function getFileDataCore(filePaths: readonly string[], fn: THash): Promise<readonly TF[]> {
+async function getFileDataCore(filePaths: readonly string[], fn: THash): Promise<readonly TF[]> {
     const d1 = filePaths
         .map(async (fsPath: string): Promise<TF> => (creatTF(fsPath, fn)));
 
@@ -81,8 +80,8 @@ export async function getFileDataCore(filePaths: readonly string[], fn: THash): 
     return need;
 }
 
-async function getFileDataCoreEx(filePaths: readonly string[], fn: THash): Promise<readonly TF[]> {
-    const arr1: string[][] = chunk(filePaths, 10240 / 2);
+export async function getFileDataCoreEx(filePaths: readonly string[], fn: THash): Promise<readonly TF[]> {
+    const arr1: string[][] = chunk(filePaths, 10230); // 10240 - 20
     const need: TF[] = [];
 
     for (const arr of arr1) {
@@ -91,24 +90,4 @@ async function getFileDataCoreEx(filePaths: readonly string[], fn: THash): Promi
     }
 
     return need;
-}
-
-
-if (isMainThread) {
-    //
-} else {
-    parentPort!.on('message', async (paramRaw: string): Promise<void> => {
-        const param = JSON.parse(paramRaw) as {
-            i: number, filePaths: readonly string[], fn: THash;
-        };
-        const { i, filePaths, fn } = param;
-        const data: readonly TF[] = await getFileDataCoreEx(filePaths, fn);
-
-        parentPort!.postMessage(JSON.stringify({
-            i,
-            data,
-        }));
-    });
-
-
 }

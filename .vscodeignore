@@ -16,3 +16,4 @@ vsc-extension-quickstart.md
 # https://github.com/microsoft/vscode-vsce/issues/421
 # and --not-dependencies
 pnpm-lock.yaml
+data/icon.md
