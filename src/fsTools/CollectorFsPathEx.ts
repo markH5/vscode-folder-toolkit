@@ -1,9 +1,5 @@
+import type { TBlockRuler } from '../configUI.data';
 import * as fs from 'node:fs';
-
-export type TBlockRuler = {
-    readonly name: string,
-    readonly reg: RegExp,
-};
 
 export function findBlockRuler(fsPath: string, blockList: readonly TBlockRuler[]): TBlockRuler | undefined {
     return blockList.find((r: TBlockRuler): boolean => r.reg.test(fsPath));

@@ -1,5 +1,5 @@
-import type { THash } from '../../configUI.data';
-import type { TBlockRuler, TNotNeed, TNotNeedValue } from '../../fsTools/CollectorFsPathEx';
+import type { TBlockRuler, THash } from '../../configUI.data';
+import type { TNotNeed, TNotNeedValue } from '../../fsTools/CollectorFsPathEx';
 import type { TReport } from './getFileDataCore';
 import { homepage, repository, version } from '../../../package.json';
 import { getfsPathListEx } from '../../fsTools/getfsPathListEx';

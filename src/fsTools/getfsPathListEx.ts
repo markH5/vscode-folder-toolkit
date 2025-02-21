@@ -1,4 +1,5 @@
-import type { TBlockRuler, TNotNeed } from './CollectorFsPathEx';
+import type { TBlockRuler } from '../configUI.data';
+import type { TNotNeed } from './CollectorFsPathEx';
 import { normalize } from 'node:path';
 import { CollectorFsPathEx } from './CollectorFsPathEx';
 

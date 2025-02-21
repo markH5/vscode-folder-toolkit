@@ -1,4 +1,6 @@
-import type { THashConfig } from './configUI.data';
+/* eslint-disable sonarjs/no-unused-vars */
+import type { THashConfig_valibot } from './configUI';
+import type { TBlockRuler, THashConfig } from './configUI.data';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { assertType, expect, it } from 'vitest';
@@ -44,12 +46,20 @@ it('check config-0 fake input', (): void => {
     };
 
     const shouldBeError = safeParserConfig0(data);
-    expect(shouldBeError.success).toBe(false);
+    expect(shouldBeError.success).toBe(false); // report should be "json" | "md" | "both"
 });
 
 it('file should be eq', (): void => {
     const ts_file: string = readFileSync(join(__dirname, './configUI.data.ts'), 'utf-8');
     const data_file: string = readFileSync(join(__dirname, '../data/configUI.data.txt'), 'utf-8');
 
-    expect(ts_file).toBe(data_file);
+    expect(ts_file).toBe(data_file); // input output should be deep eq, also check \r\n and \n
 });
+
+{
+    // check type in tsc
+    type TBlockRuler_shouldBe = Readonly<Omit<THashConfig['blockList'][number], 'reg'> & { reg: RegExp }>;
+
+    const _test_1: IsEqual<TBlockRuler_shouldBe, TBlockRuler> = true;
+    const _test_2: IsEqual<THashConfig_valibot, THashConfig> = true;
+}
