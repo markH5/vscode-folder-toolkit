@@ -1,7 +1,6 @@
-import type { InferOutput } from 'valibot';
 import { array, literal, object, safeParser, string, union } from 'valibot';
 
-export const schema = object({
+const schema = object({
     name: string(),
     fn: union([literal('sha1'), literal('sha256'), literal('md5')]),
     report: union([literal('json'), literal('md'), literal('both')]),
@@ -12,7 +11,8 @@ export const schema = object({
         }),
     ),
 });
-export type THashConfig_valibot = InferOutput<typeof schema>;
+
+export type TSchema = typeof schema;
 
 export function safeParserConfig0(data: unknown) {
     return safeParser(schema)(data);

@@ -1,5 +1,6 @@
 /* eslint-disable sonarjs/no-unused-vars */
-import type { THashConfig_valibot } from './configUI';
+import type { InferOutput } from 'valibot';
+import type { TSchema } from './configUI';
 import type { TBlockRuler, THashConfig } from './configUI.data';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
@@ -59,6 +60,8 @@ it('file should be eq', (): void => {
 {
     // check type in tsc
     type TBlockRuler_shouldBe = Readonly<Omit<THashConfig['blockList'][number], 'reg'> & { reg: RegExp }>;
+
+    type THashConfig_valibot = InferOutput<TSchema>;
 
     const _test_1: IsEqual<TBlockRuler_shouldBe, TBlockRuler> = true;
     const _test_2: IsEqual<THashConfig_valibot, THashConfig> = true;
