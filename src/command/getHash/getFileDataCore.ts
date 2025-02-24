@@ -3,6 +3,7 @@ import type { Buffer } from 'node:buffer';
 import type { Stats } from 'node:fs';
 import type { ReadonlyDeep } from 'type-fest';
 import type { THash } from '../../configUI.data';
+import type { TProgress, TToken } from './def';
 import { createHash } from 'node:crypto';
 import { createReadStream, statSync } from 'node:fs';
 import { readFile } from 'node:fs/promises';
@@ -87,13 +88,30 @@ export async function getFileDataCoreEx(
     filePaths: readonly string[],
     fn: THash,
     errLog: TErrorLog,
+    progress: TProgress,
+    token: TToken,
 ): Promise<readonly TReport[]> {
-    const arr1: string[][] = chunk(filePaths, 10220); // 10240 - 20
+    const arr1: string[][] = chunk(filePaths, 10240 / 2); // 10240 - 20
     const need: TReport[] = [];
 
     for (const arr of arr1) {
         const a: readonly TReport[] = await getFileDataCore(arr, fn, errLog);
         need.push(...a);
+        const total: number = Math.round((need.length / filePaths.length) * 100);
+
+        let message: string = `${need.length} / ${filePaths.length} ( ${total}%)`;
+        if (Object.keys(errLog).length > 0) {
+            let errSize = 0;
+            for (const arr of Object.values(errLog)) {
+                errSize += arr.length;
+            }
+            message += `[error ${errSize}]`;
+        }
+
+        progress.report({ message, increment: Math.round((a.length / filePaths.length) * 100) });
+        if (token.isCancellationRequested) {
+            return need;
+        }
     }
 
     return need;

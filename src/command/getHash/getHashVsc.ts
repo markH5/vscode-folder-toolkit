@@ -1,4 +1,5 @@
 import type { TBlock, TBlockRuler, THashConfig } from '../../configUI.data';
+import type { TProgress, TToken } from './def';
 import * as vscode from 'vscode';
 import { name } from '../../../package.json';
 import { safeParserConfig0 } from '../../configUI';
@@ -43,18 +44,34 @@ export async function getHashVsc(_file: vscode.Uri, selectedFiles: vscode.Uri[])
     const selectConfig: THashConfig | undefined = await getConfig();
     if (selectConfig === undefined) return;
 
-    const { blockList, fn, report } = selectConfig;
+    const { blockList } = selectConfig;
     const blockListRun: readonly TBlockRuler[] = blockList
         .map((r: TBlock): TBlockRuler => ({ name: r.name, reg: new RegExp(r.reg, r.flag) }));
 
-    const { json, md, errLog } = await getHashCore(select, blockListRun, fn, selectConfig);
+    await vscode.window.withProgress(
+        {
+            location: vscode.ProgressLocation.Notification,
+            title: 'calc hash',
+            cancellable: true,
+        },
+        async (progress: TProgress, token: TToken) => {
+            token.onCancellationRequested((): void => {
+                vscode.window.showInformationMessage('task is cancel');
+            });
+            const { json, md, errLog } = await getHashCore(
+                select,
+                blockListRun,
+                selectConfig,
+                progress,
+                token,
+            );
 
-    const arr: Promise<vscode.TextEditor>[] = [];
-    if (report === 'json' || report === 'both') arr.push(openAndShow('jsonc', json));
-    if (report === 'md' || report === 'both') arr.push(openAndShow('markdown', md));
-    if (Object.keys(errLog).length > 0) {
-        arr.push(openAndShow('json', JSON.stringify(errLog, null, 4)));
-    }
+            const { report } = selectConfig;
+            if (report === 'json' || report === 'both') openAndShow('jsonc', json);
+            if (report === 'md' || report === 'both') openAndShow('markdown', md);
+            if (Object.keys(errLog).length > 0) openAndShow('json', JSON.stringify(errLog, null, 4));
 
-    await Promise.all(arr);
+            progress.report({ message: 'finish', increment: 100 });
+        },
+    );
 }

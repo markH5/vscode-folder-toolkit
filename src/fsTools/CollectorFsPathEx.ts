@@ -19,7 +19,7 @@ export type TNotNeed = Map<string, TNotNeedValue[]>;
 export function CollectorFsPathEx(
     fsPath: string,
     blockList: readonly TBlockRuler[],
-    Collector: Set<string>,
+    need: Set<string>,
     notNeed: TNotNeed,
     root: string,
 ): void {
@@ -34,7 +34,7 @@ export function CollectorFsPathEx(
 
             const blockRuler: TBlockRuler | undefined = findBlockRuler(needCheckPath, blockList);
             if (blockRuler === undefined) {
-                CollectorFsPathEx(fsPathNext, blockList, Collector, notNeed, root);
+                CollectorFsPathEx(fsPathNext, blockList, need, notNeed, root);
             } else {
                 const rejectArr = notNeed.get(needCheckPath) ?? [];
                 rejectArr.push({
@@ -46,6 +46,6 @@ export function CollectorFsPathEx(
             }
         }
     } else if (Stats.isFile()) {
-        Collector.add(fsPath);
+        need.add(fsPath);
     }
 }
