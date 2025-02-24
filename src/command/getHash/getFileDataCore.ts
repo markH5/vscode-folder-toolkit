@@ -89,7 +89,7 @@ export async function getFileDataCoreEx(
     progress: TProgress,
     token: TToken,
 ): Promise<readonly TReport[]> {
-    const arr1: string[][] = chunk(filePaths, 512); // 10240 - 20
+    const arr1: string[][] = chunk(filePaths, 10240 / 2); // 10240 - 20
     const need: TReport[] = [];
 
     for (const arr of arr1) {
@@ -106,7 +106,7 @@ export async function getFileDataCoreEx(
             message += `[error ${errSize}]`;
         }
 
-        progress.report({ message, increment: Math.round((a.length / filePaths.length) * 100) });
+        progress.report({ message, increment: Math.floor((a.length * 100 / filePaths.length)) });
         if (token.isCancellationRequested) {
             return need;
         }
