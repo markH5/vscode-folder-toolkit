@@ -8,6 +8,7 @@ const schema = object({
         object({
             name: string(),
             reg: string(),
+            flag: string(),
         }),
     ),
 });

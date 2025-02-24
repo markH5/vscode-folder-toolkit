@@ -1,4 +1,4 @@
-import type { TBlockRuler, THashConfig } from '../../configUI.data';
+import type { TBlock, TBlockRuler, THashConfig } from '../../configUI.data';
 import * as vscode from 'vscode';
 import { name } from '../../../package.json';
 import { safeParserConfig0 } from '../../configUI';
@@ -44,7 +44,8 @@ export async function getHashVsc(_file: vscode.Uri, selectedFiles: vscode.Uri[])
     if (config === undefined) return;
 
     const { blockList, fn, report } = config;
-    const blockListRun: readonly TBlockRuler[] = blockList.map((r): TBlockRuler => ({ name: r.name, reg: new RegExp(r.reg, 'u') }));
+    const blockListRun: readonly TBlockRuler[] = blockList
+        .map((r: TBlock): TBlockRuler => ({ name: r.name, reg: new RegExp(r.reg, r.flag) }));
 
     const { json, md } = await getHashCore(select, blockListRun, fn);
 
