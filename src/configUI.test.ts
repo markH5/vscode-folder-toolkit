@@ -20,6 +20,53 @@ it('check config-0 default val is allow', (): void => {
             assertType<THashConfig>(shouldBeOK.output);
         }
     }
+
+    expect(list).toStrictEqual([
+        {
+            'name': 'default:0 not git/node_modules',
+            'fn': 'md5',
+            'report': 'both',
+            'blockList': [
+                {
+                    'name': 'not node_modules',
+                    'reg': '\\/node_modules(?:\\/|$)',
+                    'flag': 'v',
+                },
+                {
+                    'name': 'not .git',
+                    'reg': '\\/\\.git(?:\\/|$)',
+                    'flag': 'v',
+                },
+                {
+                    'name': 'not .svn',
+                    'reg': '\\/\\.svn(?:\\/|$)',
+                    'flag': 'v',
+                },
+            ],
+        },
+        {
+            'name': 'default:1 not git/node_modules',
+            'fn': 'sha1',
+            'report': 'both',
+            'blockList': [
+                {
+                    'name': 'not node_modules',
+                    'reg': '\\/node_modules(?:\\/|$)',
+                    'flag': 'v',
+                },
+                {
+                    'name': 'not .git',
+                    'reg': '\\/\\.git(?:\\/|$)',
+                    'flag': 'v',
+                },
+                {
+                    'name': 'not .svn',
+                    'reg': '\\/\\.svn(?:\\/|$)',
+                    'flag': 'v',
+                },
+            ],
+        },
+    ]);
 });
 
 it('check config-0 fake input', (): void => {

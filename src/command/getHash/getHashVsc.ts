@@ -48,7 +48,7 @@ export async function getHashVsc(_file: vscode.Uri, selectedFiles: vscode.Uri[])
     const blockListRun: readonly TBlockRuler[] = blockList
         .map((r: TBlock): TBlockRuler => ({ name: r.name, reg: new RegExp(r.reg, r.flag) }));
 
-    await vscode.window.withProgress(
+    vscode.window.withProgress(
         {
             location: vscode.ProgressLocation.Notification,
             title: 'calc hash',
