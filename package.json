@@ -130,7 +130,7 @@
         "watch": "pnpm run \"/^watch:.*/\"",
         "watch:esbuild": "node --watch esbuild.js --watch",
         "watch:tsc": "tsc --noEmit --watch --project tsconfig.json",
-        "watch:vitest": "pnpm vitest watch",
+        "watch:vitest": "vitest watch",
         "just pack": "node esbuild.js",
         "add:lint": "pnpm dlx @eslint/config-inspector",
         "test": "vitest run",

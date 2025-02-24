@@ -25,7 +25,6 @@
             "isBackground": true,
             "label": "npm: watch:esbuild",
             "presentation": {
-                "group": "watch",
                 "reveal": "never",
             },
         },
@@ -37,7 +36,6 @@
             "isBackground": true,
             "label": "npm: watch:tsc",
             "presentation": {
-                "group": "watch",
                 "reveal": "never",
             },
         },

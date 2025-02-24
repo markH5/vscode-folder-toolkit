@@ -2,6 +2,7 @@ export type TBlock = {
     name: string,
     reg: string, // exp "\\/node_modules(?:\\/|$)",
     flag: string, // exp "v" flag or "i" flag
+    // about v-flag https://github.com/whatwg/html/pull/7908
 };
 
 export type THashConfig = {
