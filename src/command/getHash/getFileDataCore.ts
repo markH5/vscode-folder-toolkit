@@ -3,14 +3,12 @@ import type { Buffer } from 'node:buffer';
 import type { Stats } from 'node:fs';
 import type { ReadonlyDeep } from 'type-fest';
 import type { THash } from '../../configUI.data';
-import type { TProgress, TToken } from './def';
+import type { TErrorLog, TProgress, TToken } from './def';
 import { createHash } from 'node:crypto';
 import { createReadStream, statSync } from 'node:fs';
 import { readFile } from 'node:fs/promises';
 import { chunk } from 'es-toolkit';
 import { fmtFileSize } from './fmtFileSize';
-
-export type TErrorLog = Record<string, ({ fsPath: string, error: unknown })[]>;
 
 function logErr(errLog: TErrorLog, e: unknown, fsPath: string): string {
     // https://stackoverflow.com/questions/8965606/node-and-error-emfile-too-many-open-files
@@ -64,7 +62,7 @@ async function creatTF(fsPath: string, fn: THash, errLog: TErrorLog): Promise<TR
     const Bytes: number = stat.size;
     const mTime: string = stat.mtime.toISOString();
     const size: string = fmtFileSize(Bytes, 2);
-    const hash: string = Bytes > (1024 ** 3) // 1 GiB
+    const hash: string = Bytes > 16 * (1024 ** 2) // 16 MB 10 MiB https://medium.com/@dalaidunc/fs-readfile-vs-streams-to-read-text-files-in-node-js-5dd0710c80ea
         ? await get_file_hash_stream(fsPath, fn, errLog)
         : await get_file_hash(fsPath, fn, errLog);
     return ({
@@ -91,7 +89,7 @@ export async function getFileDataCoreEx(
     progress: TProgress,
     token: TToken,
 ): Promise<readonly TReport[]> {
-    const arr1: string[][] = chunk(filePaths, 10240 / 2); // 10240 - 20
+    const arr1: string[][] = chunk(filePaths, 512); // 10240 - 20
     const need: TReport[] = [];
 
     for (const arr of arr1) {

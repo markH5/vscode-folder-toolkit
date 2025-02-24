@@ -6,3 +6,5 @@ export type TProgress = vscode.Progress<{
 }>;
 
 export type TToken = vscode.CancellationToken;
+
+export type TErrorLog = Record<string, ({ fsPath: string, error: unknown })[]>;

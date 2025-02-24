@@ -1,7 +1,7 @@
 import type { TBlockRuler, THashConfig } from '../../configUI.data';
 import type { TNotNeed, TNotNeedValue } from '../../fsTools/CollectorFsPathEx';
-import type { TProgress, TToken } from './def';
-import type { TErrorLog, TReport } from './getFileDataCore';
+import type { TErrorLog, TProgress, TToken } from './def';
+import type { TReport } from './getFileDataCore';
 import { homepage, repository, version } from '../../../package.json';
 import { getfsPathListEx } from '../../fsTools/getfsPathListEx';
 import { sum } from '../../Math/sum';

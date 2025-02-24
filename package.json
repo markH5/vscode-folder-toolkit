@@ -91,6 +91,13 @@
                             }
                         ],
                         "markdownDescription": "not now"
+                    },
+                    "vscode-folder-toolkit.maxOpenFiles": {
+                        "order": 1,
+                        "type": "number",
+                        "default": 5120,
+                        "minimum": 1,
+                        "markdownDescription": "not now"
                     }
                 }
             },
