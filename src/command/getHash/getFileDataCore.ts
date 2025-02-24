@@ -1,22 +1,49 @@
+/* eslint-disable prefer-template */
 import type { Buffer } from 'node:buffer';
 import type { Stats } from 'node:fs';
 import type { ReadonlyDeep } from 'type-fest';
 import type { THash } from '../../configUI.data';
 import { createHash } from 'node:crypto';
-import { statSync } from 'node:fs';
+import { createReadStream, statSync } from 'node:fs';
 import { readFile } from 'node:fs/promises';
 import { chunk } from 'es-toolkit';
 import { fmtFileSize } from './fmtFileSize';
 
-async function get_file_hash(fsPath: string, fn: THash): Promise<string> {
+export type TErrorLog = Record<string, ({ fsPath: string, error: unknown })[]>;
+
+function logErr(errLog: TErrorLog, e: unknown, fsPath: string): string {
+    // https://stackoverflow.com/questions/8965606/node-and-error-emfile-too-many-open-files
+    // or heap out of memory (OOM)
+    const k: string = typeof e === 'object' && e !== null && 'code' in e && typeof e.code === 'string'
+        ? e.code
+        : 'unknown';
+    const arr = errLog[k] ?? [];
+    arr.push({ fsPath, error: e });
+    errLog[k] = arr;
+    return 'Error: ' + k;
+}
+
+async function get_file_hash_stream(fsPath: string, fn: THash, errLog: TErrorLog): Promise<string> {
+    return new Promise((resolve) => {
+        const hash = createHash(fn);
+        const rs = createReadStream(fsPath);
+        rs.on('data', (chunk) => hash.update(chunk));
+        rs.on('end', () => {
+            resolve(hash.digest('hex'));
+        });
+        rs.on('error', (e) => resolve(logErr(errLog, e, fsPath)));
+    });
+}
+
+async function get_file_hash(fsPath: string, fn: THash, errLog: TErrorLog): Promise<string> {
     try {
-        const b: Buffer<ArrayBufferLike> = await readFile(fsPath);
-        const need: string = createHash(fn)
+        const b: Buffer<ArrayBufferLike> = await readFile(fsPath); // node:fs
+        const need: string = createHash(fn) // node:crypto
             .update(b)
             .digest('hex');
         return need;
-    } catch {
-        return 'get hash error';
+    } catch (e: unknown) {
+        return logErr(errLog, e, fsPath);
     }
 }
 
@@ -31,12 +58,14 @@ export type TReport = ReadonlyDeep<{
     },
 }>;
 
-async function creatTF(fsPath: string, fn: THash): Promise<TReport> {
+async function creatTF(fsPath: string, fn: THash, errLog: TErrorLog): Promise<TReport> {
     const stat: Stats = statSync(fsPath);
     const Bytes: number = stat.size;
     const mTime: string = stat.mtime.toISOString();
     const size: string = fmtFileSize(Bytes, 2);
-    const hash: string = await get_file_hash(fsPath, fn);
+    const hash: string = Bytes > (1024 ** 3) // 1 GiB
+        ? await get_file_hash_stream(fsPath, fn, errLog)
+        : await get_file_hash(fsPath, fn, errLog);
     return ({
         path: fsPath,
         size,
@@ -46,20 +75,24 @@ async function creatTF(fsPath: string, fn: THash): Promise<TReport> {
     });
 }
 
-async function getFileDataCore(filePaths: readonly string[], fn: THash): Promise<readonly TReport[]> {
+async function getFileDataCore(filePaths: readonly string[], fn: THash, errLog: TErrorLog): Promise<readonly TReport[]> {
     const d1 = filePaths
-        .map(async (fsPath: string): Promise<TReport> => (creatTF(fsPath, fn)));
+        .map(async (fsPath: string): Promise<TReport> => (creatTF(fsPath, fn, errLog)));
 
     const need: readonly TReport[] = await Promise.all(d1);
     return need;
 }
 
-export async function getFileDataCoreEx(filePaths: readonly string[], fn: THash): Promise<readonly TReport[]> {
-    const arr1: string[][] = chunk(filePaths, 10230); // 10240 - 20
+export async function getFileDataCoreEx(
+    filePaths: readonly string[],
+    fn: THash,
+    errLog: TErrorLog,
+): Promise<readonly TReport[]> {
+    const arr1: string[][] = chunk(filePaths, 10220); // 10240 - 20
     const need: TReport[] = [];
 
     for (const arr of arr1) {
-        const a: readonly TReport[] = await getFileDataCore(arr, fn);
+        const a: readonly TReport[] = await getFileDataCore(arr, fn, errLog);
         need.push(...a);
     }
 

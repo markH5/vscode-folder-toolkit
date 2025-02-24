@@ -1,6 +1,6 @@
 import type { TBlockRuler, THash, THashConfig } from '../../configUI.data';
 import type { TNotNeed, TNotNeedValue } from '../../fsTools/CollectorFsPathEx';
-import type { TReport } from './getFileDataCore';
+import type { TErrorLog, TReport } from './getFileDataCore';
 import { homepage, repository, version } from '../../../package.json';
 import { getfsPathListEx } from '../../fsTools/getfsPathListEx';
 import { sum } from '../../Math/sum';
@@ -30,6 +30,7 @@ function creatExcluded(notNeed: TNotNeed): Record<string, unknown[]> {
 export type THashReport = {
     json: string,
     md: string,
+    errLog: TErrorLog,
 };
 
 export async function getHashCore(
@@ -42,7 +43,8 @@ export async function getHashCore(
     const { need, notNeed } = getfsPathListEx(select, blockList);
     // if search > 50 show
 
-    const datas: readonly TReport[] = await getFileDataCoreEx(need, fn);
+    const errLog: TErrorLog = {};
+    const datas: readonly TReport[] = await getFileDataCoreEx(need, fn, errLog);
 
     const list: number[] = datas.map(v => v.Bytes);
     const totalSize: string = fmtFileSize(sum(list), 2);
@@ -69,5 +71,6 @@ export async function getHashCore(
     return {
         json: JSON.stringify(json, null, 4),
         md: json2md(datas, json),
+        errLog,
     };
 }

@@ -47,11 +47,14 @@ export async function getHashVsc(_file: vscode.Uri, selectedFiles: vscode.Uri[])
     const blockListRun: readonly TBlockRuler[] = blockList
         .map((r: TBlock): TBlockRuler => ({ name: r.name, reg: new RegExp(r.reg, r.flag) }));
 
-    const { json, md } = await getHashCore(select, blockListRun, fn, selectConfig);
+    const { json, md, errLog } = await getHashCore(select, blockListRun, fn, selectConfig);
 
     const arr: Promise<vscode.TextEditor>[] = [];
     if (report === 'json' || report === 'both') arr.push(openAndShow('jsonc', json));
     if (report === 'md' || report === 'both') arr.push(openAndShow('markdown', md));
+    if (Object.keys(errLog).length > 0) {
+        arr.push(openAndShow('json', JSON.stringify(errLog, null, 4)));
+    }
 
     await Promise.all(arr);
 }
