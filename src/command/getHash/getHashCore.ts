@@ -1,4 +1,4 @@
-import type { TBlockRuler, THash } from '../../configUI.data';
+import type { TBlockRuler, THash, THashConfig } from '../../configUI.data';
 import type { TNotNeed, TNotNeedValue } from '../../fsTools/CollectorFsPathEx';
 import type { TReport } from './getFileDataCore';
 import { homepage, repository, version } from '../../../package.json';
@@ -11,7 +11,7 @@ import { json2md } from './json2md';
 function creatExcluded(notNeed: TNotNeed): Record<string, unknown[]> {
     const excluded: Record<string, unknown[]> = {};
 
-    notNeed.forEach((rawV: TNotNeedValue[], k: string): void => {
+    for (const [k, rawV] of notNeed) {
         const arr = rawV
             .map((v: TNotNeedValue) => {
                 const { ruler, ...v2 } = v;
@@ -21,9 +21,8 @@ function creatExcluded(notNeed: TNotNeed): Record<string, unknown[]> {
                     ruler: { ...r, reg: reg.toString() },
                 });
             });
-
         excluded[k] = arr;
-    });
+    }
 
     return excluded;
 }
@@ -37,6 +36,7 @@ export async function getHashCore(
     select: readonly string[],
     blockList: readonly TBlockRuler[],
     fn: THash,
+    selectConfig: THashConfig,
 ): Promise<THashReport> {
     const timeStart: number = Date.now();
     const { need, notNeed } = getfsPathListEx(select, blockList);
@@ -61,7 +61,7 @@ export async function getHashCore(
     const excluded: Record<string, unknown[]> = creatExcluded(notNeed);
 
     const json = {
-        header: { comment, select },
+        header: { comment, select, selectConfig },
         body: { datas },
         footer: { useMs, totalSize, totalFile, excludedRules, excluded },
     } as const;

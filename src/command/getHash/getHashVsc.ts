@@ -40,14 +40,14 @@ async function getConfig(): Promise<THashConfig | undefined> {
 export async function getHashVsc(_file: vscode.Uri, selectedFiles: vscode.Uri[]): Promise<void> {
     const select: readonly string[] = selectedFiles.map((u): string => u.fsPath.replaceAll('\\', '/'));
 
-    const config: THashConfig | undefined = await getConfig();
-    if (config === undefined) return;
+    const selectConfig: THashConfig | undefined = await getConfig();
+    if (selectConfig === undefined) return;
 
-    const { blockList, fn, report } = config;
+    const { blockList, fn, report } = selectConfig;
     const blockListRun: readonly TBlockRuler[] = blockList
         .map((r: TBlock): TBlockRuler => ({ name: r.name, reg: new RegExp(r.reg, r.flag) }));
 
-    const { json, md } = await getHashCore(select, blockListRun, fn);
+    const { json, md } = await getHashCore(select, blockListRun, fn, selectConfig);
 
     const arr: Promise<vscode.TextEditor>[] = [];
     if (report === 'json' || report === 'both') arr.push(openAndShow('jsonc', json));
