@@ -1,5 +1,6 @@
-import type { TBlockRuler } from '../configUI.data';
-import * as fs from 'node:fs';
+import type { Stats } from 'node:fs';
+import type { TBlockRuler } from '../config.hash.internal';
+import { readdirSync, statSync } from 'node:fs';
 
 export function findBlockRuler(fsPath: string, blockList: readonly TBlockRuler[]): TBlockRuler | undefined {
     return blockList.find((r: TBlockRuler): boolean => r.reg.test(fsPath));
@@ -25,9 +26,9 @@ export function CollectorFsPathEx(
 ): void {
     if ((/\.asar$/iu).test(fsPath)) return;
 
-    const Stats: fs.Stats = fs.statSync(fsPath);
-    if (Stats.isDirectory()) {
-        const files: string[] = fs.readdirSync(fsPath);
+    const stats: Stats = statSync(fsPath);
+    if (stats.isDirectory()) {
+        const files: string[] = readdirSync(fsPath);
         for (const file of files) {
             const fsPathNext = `${fsPath}/${file}`;
             const needCheckPath: string = fsPathNext.replace(root, '');
@@ -45,7 +46,7 @@ export function CollectorFsPathEx(
                 notNeed.set(blockRuler.name, rejectArr);
             }
         }
-    } else if (Stats.isFile()) {
+    } else if (stats.isFile()) {
         need.add(fsPath);
     }
 }

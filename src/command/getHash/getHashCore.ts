@@ -1,4 +1,5 @@
-import type { TBlockRuler, THashConfig } from '../../configUI.data';
+import type { THashConfig } from '../../config.hash';
+import type { TBlockRuler } from '../../config.hash.internal';
 import type { TNotNeed, TNotNeedValue } from '../../fsTools/CollectorFsPathEx';
 import type { TErrorLog, TProgress, TToken } from './def';
 import type { TReport } from './getFileDataCore';
@@ -45,9 +46,8 @@ export async function getHashCore(
     const { need, notNeed } = getfsPathListEx(select, blockList);
     progress.report({ message: `total has ${need.length} files to calc hash`, increment: 0 });
 
-    const { fn } = selectConfig;
     const errLog: TErrorLog = {};
-    const datas: readonly TReport[] = await getFileDataCoreEx(need, fn, errLog, progress, token);
+    const datas: readonly TReport[] = await getFileDataCoreEx(need, selectConfig, errLog, progress, token);
 
     const list: number[] = datas.map(v => v.Bytes);
     const totalSize: string = fmtFileSize(sum(list), 2);

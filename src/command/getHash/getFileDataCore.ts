@@ -2,7 +2,8 @@
 import type { Buffer } from 'node:buffer';
 import type { Stats } from 'node:fs';
 import type { ReadonlyDeep } from 'type-fest';
-import type { THash } from '../../configUI.data';
+import type { THashConfig } from '../../config.hash';
+import type { THash } from '../../config.hash.internal';
 import type { TErrorLog, TProgress, TToken } from './def';
 import { createHash } from 'node:crypto';
 import { createReadStream, statSync } from 'node:fs';
@@ -84,12 +85,13 @@ async function getFileDataCore(filePaths: readonly string[], fn: THash, errLog: 
 
 export async function getFileDataCoreEx(
     filePaths: readonly string[],
-    fn: THash,
+    selectConfig: THashConfig,
     errLog: TErrorLog,
     progress: TProgress,
     token: TToken,
 ): Promise<readonly TReport[]> {
-    const arr1: string[][] = chunk(filePaths, 10240 / 2); // 10240 - 20
+    const { fn, maxOpenFiles } = selectConfig;
+    const arr1: string[][] = chunk(filePaths, maxOpenFiles); // 10240 - 20
     const need: TReport[] = [];
 
     for (const arr of arr1) {
@@ -106,7 +108,7 @@ export async function getFileDataCoreEx(
             message += `[error ${errSize}]`;
         }
 
-        progress.report({ message, increment: Math.floor((a.length * 100 / filePaths.length)) });
+        progress.report({ message, increment: Math.floor(a.length * 100 / filePaths.length) });
         if (token.isCancellationRequested) {
             return need;
         }
