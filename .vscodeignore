@@ -17,3 +17,6 @@ vsc-extension-quickstart.md
 # and --not-dependencies
 pnpm-lock.yaml
 data/icon.md
+.husky/
+
+dprint.json
