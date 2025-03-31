@@ -51,7 +51,7 @@ export type TReport = ReadonlyDeep<{
     path: string,
     size: string,
     Bytes: number,
-    mTime: string,
+    // mTime: string,
     hash: {
         k: THash,
         v: string,
@@ -61,7 +61,7 @@ export type TReport = ReadonlyDeep<{
 async function creatTF(fsPath: string, fn: THash, errLog: TErrorLog): Promise<TReport> {
     const stat: Stats = statSync(fsPath);
     const Bytes: number = stat.size;
-    const mTime: string = stat.mtime.toISOString();
+    // const mTime: string = stat.mtime.toISOString();
     const size: string = fmtFileSize(Bytes, 2);
     const hash: string = Bytes > 16 * (1024 ** 2) // 16 MB 10 MiB https://medium.com/@dalaidunc/fs-readfile-vs-streams-to-read-text-files-in-node-js-5dd0710c80ea
         ? await get_file_hash_stream(fsPath, fn, errLog)
@@ -70,7 +70,7 @@ async function creatTF(fsPath: string, fn: THash, errLog: TErrorLog): Promise<TR
         path: fsPath,
         size,
         Bytes,
-        mTime,
+        // mTime,
         hash: { k: fn, v: hash },
     });
 }

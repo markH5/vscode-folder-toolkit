@@ -1,8 +1,8 @@
 {
     "publisher": "cat1122",
     "name": "vscode-folder-toolkit",
-    "displayName": "a vscode-folder-toolkit",
-    "version": "0.0.1",
+    "displayName": "vscode-folder-toolkit",
+    "version": "0.0.2",
     "packageManager": "pnpm@10.4.0",
     "description": "Quickly calculate the hash of each file in the folder",
     "author": "Coffee Chaton(https://github.com/CoffeeChaton)",
