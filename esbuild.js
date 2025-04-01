@@ -35,6 +35,7 @@ async function main() {
         //  sourcesContent: false,
         platform: 'node',
         outdir: 'dist',
+        loader: { '.wasm': 'file' },
         external: ['vscode', '@node-rs/xxhash', '@node-rs/crc32'],
         // logLevel: 'silent',
         plugins: [

@@ -3,4 +3,5 @@
  */
 export const enum ECommand {
     getHash = 'vscode-folder-toolkit.getHash',
+    img2webp = 'vscode-folder-toolkit.img2webp',
 }

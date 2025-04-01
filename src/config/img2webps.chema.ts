@@ -1,6 +1,5 @@
 import { array, number, object, safeParser, string } from 'valibot';
 
-
 export const schema = object({
     name: string(),
     maxOpenFiles: number(),
@@ -9,8 +8,8 @@ export const schema = object({
     blockList: array(object({
         name: string(),
         reg: string(),
-        flag: string()
-    }))
+        flag: string(),
+    })),
 });
 
 export type TSchema = typeof schema;

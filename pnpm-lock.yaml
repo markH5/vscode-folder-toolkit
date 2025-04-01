@@ -21,6 +21,9 @@ importers:
 
   .:
     dependencies:
+      '@img/sharp-win32-x64':
+        specifier: ^0.33.5
+        version: 0.33.5
       es-toolkit:
         specifier: ^1.34.1
         version: 1.34.1
@@ -3406,8 +3409,7 @@ snapshots:
   '@img/sharp-win32-ia32@0.33.5':
     optional: true
 
-  '@img/sharp-win32-x64@0.33.5':
-    optional: true
+  '@img/sharp-win32-x64@0.33.5': {}
 
   '@isaacs/cliui@8.0.2':
     dependencies:

@@ -1,33 +1,14 @@
 import type { THashConfig } from '../../config.hash';
 import type { TBlockRuler } from '../../config.hash.internal';
-import type { TNotNeed, TNotNeedValue } from '../../fsTools/CollectorFsPathEx';
 import type { TErrorLog, TProgress, TToken } from './def';
 import type { TReport } from './getFileDataCore';
 import { homepage, repository, version } from '../../../package.json';
 import { getfsPathListEx } from '../../fsTools/getfsPathListEx';
 import { sum } from '../../Math/sum';
+import { creatExcluded } from './creatExcluded';
 import { fmtFileSize } from './fmtFileSize';
 import { getFileDataCoreEx } from './getFileDataCore';
 import { json2md } from './json2md';
-
-function creatExcluded(notNeed: TNotNeed): Record<string, unknown[]> {
-    const excluded: Record<string, unknown[]> = {};
-
-    for (const [k, rawV] of notNeed) {
-        const arr = rawV
-            .map((v: TNotNeedValue) => {
-                const { ruler, ...v2 } = v;
-                const { reg, ...r } = ruler;
-                return ({
-                    ...v2,
-                    ruler: { ...r, reg: reg.toString() },
-                });
-            });
-        excluded[k] = arr;
-    }
-
-    return excluded;
-}
 
 export type THashReport = {
     json: string,

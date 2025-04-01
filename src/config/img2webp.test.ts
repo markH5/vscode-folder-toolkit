@@ -1,13 +1,12 @@
 /* eslint-disable sonarjs/no-unused-vars */
 import type { InferOutput } from 'valibot';
 import type { TImg2webp_config } from './img2webp.def';
-import type { schema } from "./img2webps.chema";
+import type { schema } from './img2webps.chema';
 
 import { expect, it } from 'vitest';
 import { contributes } from '../../package.json';
-import { safeParserConfig_1 } from "./img2webps.chema";
+import { safeParserConfig_1 } from './img2webps.chema';
 const { configuration } = contributes;
-
 
 it('check config-0 default val is allow', (): void => {
     const list: unknown[] = configuration[1].properties['vscode-folder-toolkit.img2webp']?.default ?? [];
@@ -17,7 +16,6 @@ it('check config-0 default val is allow', (): void => {
         expect(shouldBeOK.success).toBe(true);
     }
 });
-
 
 {
     // check type in tsc
