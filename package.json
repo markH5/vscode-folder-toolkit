@@ -93,25 +93,44 @@
                             }
                         ],
                         "markdownDescription": "not now"
-                    },
-                    "vscode-folder-toolkit.maxOpenFiles": {
-                        "order": 1,
-                        "type": "number",
-                        "default": 5120,
-                        "minimum": 1,
-                        "markdownDescription": "not now"
                     }
                 }
             },
             {
                 "type": "object",
-                "title": "2. TODO",
+                "title": "2. img to webp",
                 "properties": {
-                    "vscode-folder-toolkit.TODO": {
+                    "vscode-folder-toolkit.img2webp": {
                         "order": 0,
-                        "type": "boolean",
-                        "default": false,
-                        "markdownDescription": "not now"
+                        "type": "array",
+                        "default": [
+                            {
+                                "name": "default:0 quality 80%",
+                                "maxOpenFiles": 16,
+                                "sharp_options": {
+                                    "quality": 80
+                                },
+                                "allowList": [".jpg", ".webp", ".png"],
+                                "blockList": [
+                                    {
+                                        "name": "not node_modules",
+                                        "reg": "\\/node_modules(?:\\/|$)",
+                                        "flag": "v"
+                                    },
+                                    {
+                                        "name": "not .git",
+                                        "reg": "\\/\\.git(?:\\/|$)",
+                                        "flag": "v"
+                                    },
+                                    {
+                                        "name": "not .svn",
+                                        "reg": "\\/\\.svn(?:\\/|$)",
+                                        "flag": "v"
+                                    }
+                                ]
+                            }
+                        ],
+                        "markdownDescription": "use [sharp](https://sharp.pixelplumbing.com/api-output#webp)"
                     }
                 }
             }
@@ -154,6 +173,7 @@
     },
     "dependencies": {
         "es-toolkit": "^1.34.1",
+        "sharp": "^0.33.5",
         "valibot": "1.0.0"
     },
     "devDependencies": {
@@ -185,7 +205,8 @@
             "@vscode/vsce-sign",
             "dprint",
             "esbuild",
-            "keytar"
+            "keytar",
+            "sharp"
         ],
         "overrides": {
             "array-includes": "npm:@nolyfill/array-includes@^1",
