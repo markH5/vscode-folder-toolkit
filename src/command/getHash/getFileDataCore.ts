@@ -1,4 +1,3 @@
-/* eslint-disable prefer-template */
 import type { Buffer } from 'node:buffer';
 import type { Stats } from 'node:fs';
 import type { ReadonlyDeep } from 'type-fest';
@@ -20,7 +19,7 @@ function logErr(errLog: TErrorLog, e: unknown, fsPath: string): string {
     const arr = errLog[k] ?? [];
     arr.push({ fsPath, error: e });
     errLog[k] = arr;
-    return 'Error: ' + k;
+    return `Error: ${k}`;
 }
 
 async function get_file_hash_stream(fsPath: string, fn: THash, errLog: TErrorLog): Promise<string> {
@@ -99,7 +98,7 @@ export async function getFileDataCoreEx(
         need.push(...a);
         const total: number = Math.round((need.length / filePaths.length) * 100);
 
-        let message: string = `${need.length} / ${filePaths.length} ( ${total}%)`;
+        let message = `${need.length} / ${filePaths.length} ( ${total}%)`;
         if (Object.keys(errLog).length > 0) {
             let errSize = 0;
             for (const arr of Object.values(errLog)) {

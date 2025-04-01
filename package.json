@@ -26,7 +26,7 @@
     "main": "./dist/extension.js",
     "icon": "data/icon.png",
     "engines": {
-        "vscode": "^1.97.0"
+        "vscode": "^1.98.0"
     },
     "activationEvents": [],
     "contributes": {
@@ -134,6 +134,7 @@
         "url": "https://github.com/CoffeeChaton/vscode-folder-toolkit"
     },
     "scripts": {
+        "release:pre": "set TIMING=1 && dprint fmt && pnpm oxlint && pnpm biome lint . && pnpm eslint .",
         "creat_vsix_release": "pnpm run package && pnpm vsce package",
         "creat_vsix_pre_release": "pnpm run package && pnpm vsce package --pre-release",
         "watch": "pnpm run \"/^watch:.*/\"",
@@ -146,31 +147,33 @@
         "test:coverage": "vitest --coverage",
         "lint": "eslint --env-info && pnpm eslint",
         "lint:fix": "eslint --env-info && pnpm eslint . --fix",
-        "package": "pnpm tsc & pnpm run test & pnpm run fmt & pnpm run lint:fix && pnpm run fmt && node esbuild.js",
+        "package": "pnpm run release:pre && pnpm tsc & pnpm run test && node esbuild.js",
         "up": "dprint config update && pnpm up -L",
-        "fmt": "dprint fmt",
         "run_nolyfill": "pnpm dlx nolyfill install",
         "prepare": "husky"
     },
     "dependencies": {
-        "es-toolkit": "^1.32.0",
-        "valibot": "1.0.0-rc.1"
+        "es-toolkit": "^1.34.1",
+        "valibot": "1.0.0"
     },
     "devDependencies": {
-        "@antfu/eslint-config": "^4.3.0",
-        "@types/node": "~22.13.5",
-        "@types/vscode": "^1.97.0",
-        "@typescript-eslint/eslint-plugin": "^8.25.0",
-        "@typescript-eslint/parser": "^8.25.0",
-        "@vscode/vsce": "^3.2.2",
-        "dprint": "^0.49.0",
-        "esbuild": "^0.25.0",
-        "eslint": "^9.21.0",
+        "@antfu/eslint-config": "^4.11.0",
+        "@biomejs/biome": "^1.9.4",
+        "@types/node": "~22.13.15",
+        "@types/vscode": "^1.98.0",
+        "@typescript-eslint/eslint-plugin": "^8.29.0",
+        "@typescript-eslint/parser": "^8.29.0",
+        "@vscode/vsce": "^3.3.2",
+        "dprint": "^0.49.1",
+        "esbuild": "^0.25.2",
+        "eslint": "^9.23.0",
+        "eslint-plugin-oxlint": "^0.16.4",
         "eslint-plugin-sonarjs": "^3.0.2",
         "husky": "^9.1.7",
-        "type-fest": "^4.35.0",
-        "typescript": "^5.7.3",
-        "vitest": "^3.0.7"
+        "oxlint": "^0.16.4",
+        "type-fest": "^4.38.0",
+        "typescript": "^5.8.2",
+        "vitest": "^3.1.1"
     },
     "galleryBanner": {
         "color": "#b09df5",
@@ -178,6 +181,7 @@
     },
     "pnpm": {
         "onlyBuiltDependencies": [
+            "@biomejs/biome",
             "@vscode/vsce-sign",
             "dprint",
             "esbuild",

@@ -1,0 +1,40 @@
+{
+    "$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
+    "organizeImports": {
+        "enabled": true
+    },
+    "vcs": {
+        "enabled": true,
+        "defaultBranch": "main",
+        "clientKind": "git",
+        "useIgnoreFile": true
+    },
+    "files": {
+        "include": [
+            "./**/*.ts"
+        ],
+        "ignore": [
+            "node_modules/**"
+        ],
+        "ignoreUnknown": true
+    },
+    "formatter": {
+        "enabled": false
+    },
+    "linter": {
+        "enabled": true,
+        "rules": {
+            "style": {},
+            "suspicious": {
+                "noConstEnum": "off",
+                "noConsole": "off",
+                "noConsoleLog": "off"
+            },
+            "recommended": true,
+            "correctness": {},
+            "complexity": {},
+            "performance": {},
+            "security": {}
+        }
+    }
+}

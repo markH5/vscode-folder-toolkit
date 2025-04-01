@@ -1,0 +1,6 @@
+*.ts eol=crlf
+*.tsx eol=crlf
+*.json eol=crlf
+*.js eol=crlf
+*.md eol=crlf
+*.mdx eol=crlf

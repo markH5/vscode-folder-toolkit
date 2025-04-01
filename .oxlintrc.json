@@ -1,0 +1,35 @@
+{
+    "$schema": "./node_modules/oxlint/configuration_schema.json",
+    "plugins": [
+        "import",
+        "jsdoc",
+        "unicorn",
+        "promise",
+        "typescript",
+        "oxc",
+        "eslint",
+        "security",
+        "tree_shaking"
+    ],
+    "ignorePatterns": [
+        "**/*.js"
+    ],
+    "rules": {
+        "import/no-cycle": "error",
+        "import/namespace": "error",
+        "import/named": "error",
+        "unicorn/prefer-node-protocol": "error",
+        "eslint/max-depth": [
+            "error",
+            {
+                "max": 4
+            }
+        ],
+        "no-console": "off",
+        "no-undefined": "off",
+        "no-plusplus": "warn",
+        "oxc/no-const-enum": "off"
+    },
+    "categories": {},
+    "overrides": []
+}
