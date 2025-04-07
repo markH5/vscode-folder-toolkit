@@ -2,8 +2,8 @@
     "publisher": "cat1122",
     "name": "vscode-folder-toolkit",
     "displayName": "vscode-folder-toolkit",
-    "version": "0.0.3",
-    "packageManager": "pnpm@10.4.0",
+    "version": "0.0.4",
+    "packageManager": "pnpm@10.2.0",
     "description": "Quickly calculate the hash of each file in the folder",
     "author": "Coffee Chaton(https://github.com/CoffeeChaton)",
     "license": "MIT",
@@ -104,8 +104,22 @@
                 "type": "object",
                 "title": "2. img to webp",
                 "properties": {
-                    "vscode-folder-toolkit.img2webp": {
+                    "vscode-folder-toolkit.cwebp_Path": {
                         "order": 0,
+                        "type": "array",
+                        "default": [
+                            "C:\\<your_path>\\libwebp\\bin\\cwebp.exe",
+                            "/usr/bin/libwebp/bin/cwebp",
+                            "/usr/local/bin/libwebp/bin/cwebp",
+                            "/usr/local/Cellar/libwebp/1.5.0/bin/cwebp"
+                        ],
+                        "items": {
+                            "type": "string"
+                        },
+                        "markdownDescription": "download [webp](https://developers.google.com/speed/webp/download) && set the path here."
+                    },
+                    "vscode-folder-toolkit.img2webp": {
+                        "order": 1,
                         "type": "array",
                         "default": [
                             {
@@ -164,9 +178,9 @@
         "url": "https://github.com/CoffeeChaton/vscode-folder-toolkit"
     },
     "scripts": {
-        "release:pre": "set TIMING=1 && dprint fmt && pnpm oxlint && pnpm biome lint . && pnpm eslint .",
-        "creat_vsix_release": "pnpm run package && pnpm vsce package",
-        "creat_vsix_pre_release": "pnpm run package && pnpm vsce package --pre-release",
+        "release:pre": "set TIMING=1 && dprint fmt && oxlint && biome lint . && eslint .",
+        "creat_vsix_release": "vsce package",
+        "creat_vsix_pre_release": "pnpm run package && vsce package --pre-release",
         "watch": "pnpm run \"/^watch:.*/\"",
         "watch:esbuild": "node --watch esbuild.js --watch",
         "watch:tsc": "tsc --noEmit --watch --project tsconfig.json",
@@ -183,9 +197,7 @@
         "prepare": "husky"
     },
     "dependencies": {
-        "@img/sharp-win32-x64": "^0.33.5",
         "es-toolkit": "^1.34.1",
-        "sharp": "^0.33.5",
         "valibot": "1.0.0"
     },
     "devDependencies": {
@@ -203,6 +215,7 @@
         "eslint-plugin-sonarjs": "^3.0.2",
         "husky": "^9.1.7",
         "oxlint": "^0.16.4",
+        "tsx": "^4.19.3",
         "type-fest": "^4.38.0",
         "typescript": "^5.8.2",
         "vitest": "^3.1.1"
@@ -212,26 +225,23 @@
         "theme": "dark"
     },
     "pnpm": {
-        "onlyBuiltDependencies": [
-            "@biomejs/biome",
-            "@vscode/vsce-sign",
-            "dprint",
-            "esbuild",
-            "keytar",
-            "sharp"
-        ],
         "overrides": {
             "array-includes": "npm:@nolyfill/array-includes@^1",
             "array.prototype.flat": "npm:@nolyfill/array.prototype.flat@^1",
             "es-set-tostringtag": "npm:@nolyfill/es-set-tostringtag@^1",
             "is-core-module": "npm:@nolyfill/is-core-module@^1",
-            "isarray": "npm:@nolyfill/isarray@^1",
             "object.assign": "npm:@nolyfill/object.assign@^1",
             "object.values": "npm:@nolyfill/object.values@^1",
             "safe-buffer": "npm:@nolyfill/safe-buffer@^1",
             "safer-buffer": "npm:@nolyfill/safer-buffer@^1",
-            "side-channel": "npm:@nolyfill/side-channel@^1",
-            "string.prototype.padend": "npm:@nolyfill/string.prototype.padend@^1"
-        }
+            "side-channel": "npm:@nolyfill/side-channel@^1"
+        },
+        "onlyBuiltDependencies": [
+            "@biomejs/biome",
+            "@vscode/vsce-sign",
+            "dprint",
+            "esbuild",
+            "keytar"
+        ]
     }
 }

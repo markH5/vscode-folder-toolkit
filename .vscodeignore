@@ -1,7 +1,6 @@
 .vscode/**
 .vscode-test/**
 out/**
-node_modules/**
 src/**
 .gitignore
 .yarnrc
@@ -16,7 +15,12 @@ vsc-extension-quickstart.md
 # https://github.com/microsoft/vscode-vsce/issues/421
 # and --not-dependencies
 pnpm-lock.yaml
+
 data/icon.md
 .husky/
 
+.nvmrc
 dprint.json
+biome.jsonc
+
+node_modules

@@ -1,10 +1,9 @@
+import type { Buffer } from 'node:buffer';
 import type * as vscode from 'vscode';
 import type { TBlockRuler } from '../../config.hash.internal';
-/* eslint-disable node/prefer-global/buffer */
 import type { TImg2webp_config } from '../../config/img2webp.def';
 import type { TProgress } from '../getHash/def';
 import { readFile, stat, writeFile } from 'node:fs/promises';
-import sharp from 'sharp';
 import { homepage, repository, version } from '../../../package.json';
 import { getfsPathListEx } from '../../fsTools/getfsPathListEx';
 import { creatExcluded } from '../getHash/creatExcluded';
@@ -61,9 +60,7 @@ export async function img2webpCore(
         progress.report({ message, increment: step });
 
         const buffer: Buffer = await readFile(file1);
-        const data: Buffer = await sharp(buffer)
-            .webp(selectConfig.sharp_options)
-            .toBuffer();
+        const data: Buffer = buffer;
 
         const file2: string = file1.replace(/\.\w+$/u, '.webp');
         await writeFile(file2, data);
@@ -84,7 +81,7 @@ export async function img2webpCore(
             },
             diff: {
                 diff_size: fmtFileSize(s1.size - s2.size, 2),
-                diff: `${(100 * (s1.size - s2.size) / s1.size).toFixed(2)}%`,
+                diff: `- ${(100 * (s1.size - s2.size) / s1.size).toFixed(2)}%`,
             },
         });
     }
@@ -98,13 +95,12 @@ export async function img2webpCore(
         repository,
     };
 
-    const excludedRules = blockList.map((r: TBlockRuler) => ({ name: r.name, reg: r.reg.toString() }));
     const excluded: Record<string, unknown[]> = creatExcluded(notNeed);
 
     const json = {
-        header: { comment, select, selectConfig },
+        header: { comment, select, selectConfig: JSON.stringify(selectConfig) },
         body: { datas },
-        footer: { useMs, excludedRules, excluded },
+        footer: { useMs, excluded },
     } as const;
 
     return JSON.stringify(json, null, 4);

@@ -6,6 +6,7 @@ import * as vscode from 'vscode';
 import { name } from '../../../package.json';
 import { safeParserConfig_1 } from '../../config/img2webps.chema';
 import { openAndShow } from '../getHash/openAndShow';
+import { get_cwebp_Path } from './get_cwebp_Path';
 import { img2webpCore } from './img2webpCore';
 
 async function getConfig(): Promise<TImg2webp_config | undefined> {
@@ -35,6 +36,9 @@ async function getConfig(): Promise<TImg2webp_config | undefined> {
 
 export async function img2webp(_file: vscode.Uri, selectedFiles: vscode.Uri[]): Promise<void> {
     const select: readonly string[] = selectedFiles.map((u): string => u.fsPath.replaceAll('\\', '/'));
+
+    const path: string | undefined = get_cwebp_Path();
+    if (path === undefined) return;
 
     const selectConfig: TImg2webp_config | undefined = await getConfig();
     if (selectConfig === undefined) return;
