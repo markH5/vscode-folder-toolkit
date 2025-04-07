@@ -37,8 +37,8 @@ async function getConfig(): Promise<TImg2webp_config | undefined> {
 export async function img2webp(_file: vscode.Uri, selectedFiles: vscode.Uri[]): Promise<void> {
     const select: readonly string[] = selectedFiles.map((u): string => u.fsPath.replaceAll('\\', '/'));
 
-    const path: string | undefined = get_cwebp_Path();
-    if (path === undefined) return;
+    const cwebp_Path: string | undefined = get_cwebp_Path();
+    if (cwebp_Path === undefined) return;
 
     const selectConfig: TImg2webp_config | undefined = await getConfig();
     if (selectConfig === undefined) return;
@@ -58,6 +58,7 @@ export async function img2webp(_file: vscode.Uri, selectedFiles: vscode.Uri[]): 
                 vscode.window.showInformationMessage('task is cancel');
             });
             const ans: string = await img2webpCore(
+                cwebp_Path,
                 select,
                 blockListRun,
                 selectConfig,

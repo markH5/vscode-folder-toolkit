@@ -1,9 +1,8 @@
-import { array, number, object, safeParser, string } from 'valibot';
+import { array, object, safeParser, string } from 'valibot';
 
 export const schema = object({
     name: string(),
-    maxOpenFiles: number(),
-    sharp_options: object({}),
+    opt: string(),
     allowList: array(string()),
     blockList: array(object({
         name: string(),

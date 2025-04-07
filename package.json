@@ -124,13 +124,11 @@
                         "default": [
                             {
                                 "name": "default:0 quality 80%",
-                                "maxOpenFiles": 16,
-                                "sharp_options": {
-                                    "quality": 80
-                                },
+                                "opt": "-mt -quiet -q 80",
                                 "allowList": [
                                     ".jpg",
-                                    ".png"
+                                    ".png",
+                                    ".tif"
                                 ],
                                 "blockList": [
                                     {
@@ -151,7 +149,7 @@
                                 ]
                             }
                         ],
-                        "markdownDescription": "use [sharp](https://sharp.pixelplumbing.com/api-output#webp)"
+                        "markdownDescription": "about opt [docs](https://developers.google.com/speed/webp/docs/cwebp#examples"
                     }
                 }
             }

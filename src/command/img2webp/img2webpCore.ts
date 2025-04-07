@@ -1,11 +1,11 @@
-import type { Buffer } from 'node:buffer';
-import type * as vscode from 'vscode';
 import type { TBlockRuler } from '../../config.hash.internal';
 import type { TImg2webp_config } from '../../config/img2webp.def';
 import type { TProgress } from '../getHash/def';
-import { readFile, stat, writeFile } from 'node:fs/promises';
+import { stat } from 'node:fs/promises';
+import * as vscode from 'vscode';
 import { homepage, repository, version } from '../../../package.json';
 import { getfsPathListEx } from '../../fsTools/getfsPathListEx';
+import { exec_plus } from '../exec_plus';
 import { creatExcluded } from '../getHash/creatExcluded';
 import { fmtFileSize } from '../getHash/fmtFileSize';
 
@@ -24,6 +24,7 @@ function getNeedImg(files: readonly string[], selectConfig: TImg2webp_config): r
 }
 
 export async function img2webpCore(
+    cwebp_Path: string,
     select: readonly string[],
     blockList: readonly TBlockRuler[],
     selectConfig: TImg2webp_config,
@@ -36,7 +37,9 @@ export async function img2webpCore(
 
     const need: readonly string[] = getNeedImg(needRaw, selectConfig);
 
-    console.log('need', { need });
+    // const cwebp_opt: string = JSON.stringify(selectConfig.opt);
+    const cwebp_opt: string = selectConfig.opt;
+
     progress.report({ message: `total has ${need.length} files to calc hash`, increment: 0 });
 
     type TBaseData = {
@@ -55,27 +58,32 @@ export async function img2webpCore(
     const datas: TData[] = [];
 
     const step: number = 1 / (need.length);
-    for (const [i, file1] of need.entries()) {
-        const message: string = `(${i} of ${need.length}) to webp, "${file1}"`;
+    for (const [i, input_file] of need.entries()) {
+        const message: string = `(${i + 1} of ${need.length}) to webp, "${input_file}"`;
         progress.report({ message, increment: step });
 
-        const buffer: Buffer = await readFile(file1);
-        const data: Buffer = buffer;
+        const output_file: string = `${input_file.replace(/\.\w+$/u, '')}.webp`;
 
-        const file2: string = file1.replace(/\.\w+$/u, '.webp');
-        await writeFile(file2, data);
+        //       cwebp [options] input_file -o output_file.webp
+        const cmd = `"${cwebp_Path}" ${cwebp_opt} "${input_file}" -o "${output_file}"`;
+        const exit_code: number = await exec_plus(cmd, `(${i + 1} of ${need.length}) to webp`);
+        if (exit_code !== 0) {
+            vscode.window.showErrorMessage(`Failed to execute command: ${cmd}`);
+            vscode.window.showErrorMessage(`exit_code: ${exit_code}`);
+            continue;
+        }
 
-        const s1 = await stat(file1);
-        const s2 = await stat(file2);
+        const s1 = await stat(input_file);
+        const s2 = await stat(output_file);
 
         datas.push({
             raw: {
-                path: file1,
+                path: input_file,
                 size: s1.size,
                 sizeS: fmtFileSize(s1.size, 2),
             },
             out: {
-                path: file2,
+                path: output_file,
                 size: s2.size,
                 sizeS: fmtFileSize(s2.size, 2),
             },
@@ -98,7 +106,7 @@ export async function img2webpCore(
     const excluded: Record<string, unknown[]> = creatExcluded(notNeed);
 
     const json = {
-        header: { comment, select, selectConfig: JSON.stringify(selectConfig) },
+        header: { comment, select, selectConfig },
         body: { datas },
         footer: { useMs, excluded },
     } as const;

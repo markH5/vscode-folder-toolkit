@@ -2,8 +2,7 @@ import type { TBlock } from '../config.hash';
 
 export type TImg2webp_config = {
     name: string,
-    maxOpenFiles: number,
-    sharp_options: object,
+    opt: string,
     allowList: string[], // ,[".jpg", ".webp", ".png"],
     blockList: TBlock[],
 };
