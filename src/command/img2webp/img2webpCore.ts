@@ -15,7 +15,7 @@ function getNeedImg(files: readonly string[], selectConfig: TImg2webp_config): r
 
     for (const file of files) {
         for (const allow of allowList) {
-            if (file.endsWith(allow)) {
+            if (file.toLowerCase().endsWith(allow)) {
                 need.push(file);
             }
         }
@@ -31,7 +31,9 @@ export async function img2webpCore(
     progress: TProgress,
     // eslint-disable-next-line unused-imports/no-unused-vars
     token: vscode.CancellationToken,
-): Promise<string> {
+): Promise<{
+    json_report: unknown,
+}> {
     const timeStart: number = Date.now();
     const { need: needRaw, notNeed } = getfsPathListEx(select, blockList);
 
@@ -39,6 +41,7 @@ export async function img2webpCore(
 
     // const cwebp_opt: string = JSON.stringify(selectConfig.opt);
     const cwebp_opt: string = selectConfig.opt;
+    const max_cover_files: number = selectConfig.max_cover_files;
 
     progress.report({ message: `total has ${need.length} files to calc hash`, increment: 0 });
 
@@ -48,6 +51,7 @@ export async function img2webpCore(
         sizeS: string,
     };
     type TData = {
+        id: number,
         raw: TBaseData,
         out: TBaseData,
         diff: {
@@ -58,42 +62,76 @@ export async function img2webpCore(
     const datas: TData[] = [];
 
     const step: number = 1 / (need.length);
+    const need_arr: Promise<void>[] = [];
+    let j = 0;
     for (const [i, input_file] of need.entries()) {
-        const message: string = `(${i + 1} of ${need.length}) to webp, "${input_file}"`;
-        progress.report({ message, increment: step });
+        const foo: Promise<void> = (async () => {
+            const output_file: string = `${input_file.replace(/\.\w+$/u, '')}.webp`;
 
-        const output_file: string = `${input_file.replace(/\.\w+$/u, '')}.webp`;
+            //       cwebp [options] input_file -o output_file.webp
+            const cmd = `"${cwebp_Path}" ${cwebp_opt} "${input_file}" -o "${output_file}"`;
+            const id = i + 1;
+            const exit_code: number = await exec_plus(cmd, `(id : ${id} of ${need.length}) to webp`);
 
-        //       cwebp [options] input_file -o output_file.webp
-        const cmd = `"${cwebp_Path}" ${cwebp_opt} "${input_file}" -o "${output_file}"`;
-        const exit_code: number = await exec_plus(cmd, `(${i + 1} of ${need.length}) to webp`);
-        if (exit_code !== 0) {
-            vscode.window.showErrorMessage(`Failed to execute command: ${cmd}`);
-            vscode.window.showErrorMessage(`exit_code: ${exit_code}`);
-            continue;
+            const s1 = await stat(input_file);
+            j += 1;
+            const message: string = `(${j + 1} of ${need.length}) to webp, "${input_file}"`;
+            progress.report({ message, increment: step });
+            if (exit_code !== 0) {
+                vscode.window.showErrorMessage(`Failed to execute command: ${cmd}`);
+                vscode.window.showErrorMessage(`exit_code: ${exit_code}`);
+
+                datas.push({
+                    id,
+                    raw: {
+                        path: input_file,
+                        size: s1.size,
+                        sizeS: fmtFileSize(s1.size, 2),
+                    },
+                    out: {
+                        path: output_file,
+                        size: Number.NaN,
+                        sizeS: 'unknown',
+                    },
+                    diff: {
+                        diff_size: 'NaN',
+                        diff: 'unknown %',
+                    },
+                });
+                return;
+            }
+
+            const s2 = await stat(output_file);
+            const diff_number = 100 * (s1.size - s2.size) / s1.size;
+            datas.push({
+                id,
+                raw: {
+                    path: input_file,
+                    size: s1.size,
+                    sizeS: fmtFileSize(s1.size, 2),
+                },
+                out: {
+                    path: output_file,
+                    size: s2.size,
+                    sizeS: fmtFileSize(s2.size, 2),
+                },
+                diff: {
+                    diff_size: fmtFileSize(s1.size - s2.size, 2),
+                    diff: `${diff_number > 0 ? '+' : '-'} ${Math.abs(diff_number).toFixed(2)}%`,
+                },
+            });
+        })();
+
+        need_arr.push(foo);
+        if (need_arr.length > max_cover_files) {
+            await Promise.all(need_arr);
+            need_arr.length = 0;
         }
-
-        const s1 = await stat(input_file);
-        const s2 = await stat(output_file);
-
-        datas.push({
-            raw: {
-                path: input_file,
-                size: s1.size,
-                sizeS: fmtFileSize(s1.size, 2),
-            },
-            out: {
-                path: output_file,
-                size: s2.size,
-                sizeS: fmtFileSize(s2.size, 2),
-            },
-            diff: {
-                diff_size: fmtFileSize(s1.size - s2.size, 2),
-                diff: `- ${(100 * (s1.size - s2.size) / s1.size).toFixed(2)}%`,
-            },
-        });
     }
 
+    await Promise.all(need_arr);
+
+    datas.sort((a, b) => a.id - b.id);
     const timeEnd: number = Date.now();
     const useMs: number = timeEnd - timeStart;
 
@@ -105,11 +143,13 @@ export async function img2webpCore(
 
     const excluded: Record<string, unknown[]> = creatExcluded(notNeed);
 
-    const json = {
+    const json_report = {
         header: { comment, select, selectConfig },
         body: { datas },
         footer: { useMs, excluded },
     } as const;
 
-    return JSON.stringify(json, null, 4);
+    return {
+        json_report,
+    };
 }

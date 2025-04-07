@@ -125,6 +125,34 @@
                             {
                                 "name": "default:0 quality 80%",
                                 "opt": "-mt -quiet -q 80",
+                                "max_cover_files": 128,
+                                "allowList": [
+                                    ".jpg",
+                                    ".png",
+                                    ".tif"
+                                ],
+                                "blockList": [
+                                    {
+                                        "name": "not node_modules",
+                                        "reg": "\\/node_modules(?:\\/|$)",
+                                        "flag": "v"
+                                    },
+                                    {
+                                        "name": "not .git",
+                                        "reg": "\\/\\.git(?:\\/|$)",
+                                        "flag": "v"
+                                    },
+                                    {
+                                        "name": "not .svn",
+                                        "reg": "\\/\\.svn(?:\\/|$)",
+                                        "flag": "v"
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "default:1 lossless",
+                                "opt": "-mt -quiet -lossless",
+                                "max_cover_files": 128,
                                 "allowList": [
                                     ".jpg",
                                     ".png",

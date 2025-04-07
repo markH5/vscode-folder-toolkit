@@ -57,7 +57,7 @@ export async function img2webp(_file: vscode.Uri, selectedFiles: vscode.Uri[]): 
             token.onCancellationRequested((): void => {
                 vscode.window.showInformationMessage('task is cancel');
             });
-            const ans: string = await img2webpCore(
+            const ans = await img2webpCore(
                 cwebp_Path,
                 select,
                 blockListRun,
@@ -65,7 +65,7 @@ export async function img2webp(_file: vscode.Uri, selectedFiles: vscode.Uri[]): 
                 progress,
                 token,
             );
-            openAndShow('json', ans);
+            openAndShow('json', JSON.stringify(ans.json_report, null, 2));
 
             progress.report({ message: 'finish', increment: 100 });
             //   vscode.window.showInformationMessage('task is finish');
