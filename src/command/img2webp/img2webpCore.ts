@@ -1,11 +1,13 @@
 import type { TBlockRuler } from '../../config.hash.internal';
 import type { TImg2webp_config } from '../../config/img2webp.def';
 import type { TProgress } from '../getHash/def';
-import type { TData } from './def';
+import type { TData, TStatistics } from './def';
 import { stat } from 'node:fs/promises';
 import * as vscode from 'vscode';
 import { homepage, repository, version } from '../../../package.json';
 import { getfsPathListEx } from '../../fsTools/getfsPathListEx';
+import { math_sum } from '../../utility/math_sum';
+import { sleep } from '../../utility/sleep';
 import { exec_plus } from '../exec_plus';
 import { creatExcluded } from '../getHash/creatExcluded';
 import { fmtFileSize } from '../getHash/fmtFileSize';
@@ -23,6 +25,11 @@ function getNeedImg(files: readonly string[], selectConfig: TImg2webp_config): r
         }
     }
     return need;
+}
+
+function getDiffStr(a: number, b: number): `${'+' | '-'} ${string}%` {
+    const diff_number = 100 * (a - b) / a;
+    return `${diff_number < 0 ? '+' : '-'} ${Math.abs(diff_number).toFixed(2).padStart(5)}%`;
 }
 
 export async function img2webpCore(
@@ -50,27 +57,29 @@ export async function img2webpCore(
 
     const datas: TData[] = [];
 
-    const step: number = 1 / (need.length);
-    const need_arr: Promise<void>[] = [];
+    const pool = new Map<number, Promise<void>>();
     let j = 0;
     for (const [i, input_file] of need.entries()) {
+        const id: number = i + 1;
         const foo: Promise<void> = (async () => {
             const output_file: string = `${input_file.replace(/\.\w+$/u, '')}.webp`;
 
             //       cwebp [options] input_file -o output_file.webp
             const cmd = `"${cwebp_Path}" ${cwebp_opt} "${input_file}" -o "${output_file}"`;
-            const id = i + 1;
-            const exit_code: number = await exec_plus(cmd, `(id : ${id} of ${need.length}) to webp`);
 
+            const exit_code: number = await exec_plus(cmd, `(id : ${id} of ${need.length}) to webp`);
+            pool.delete(id);
             const s1 = await stat(input_file);
-            j += 1;
-            const message: string = `(${j + 1} of ${need.length}) to webp, "${input_file}"`;
-            progress.report({ message, increment: step });
             const raw = {
                 path: input_file,
                 size: s1.size,
                 sizeS: fmtFileSize(s1.size, 2),
             };
+
+            j += 1;
+            const message: string = `(${j + 1} of ${need.length}) to webp, "${input_file}"`;
+            progress.report({ message });
+
             if (exit_code !== 0) {
                 vscode.window.showErrorMessage(`exit_code: ${exit_code},\nFailed to execute command: ${cmd}`);
                 datas.push({
@@ -90,7 +99,6 @@ export async function img2webpCore(
             }
 
             const s2 = await stat(output_file);
-            const diff_number = 100 * (s1.size - s2.size) / s1.size;
             datas.push({
                 id,
                 raw,
@@ -101,19 +109,23 @@ export async function img2webpCore(
                 },
                 diff: {
                     diff_size: fmtFileSize(s1.size - s2.size, 2),
-                    diff: `${diff_number < 0 ? '+' : '-'} ${Math.abs(diff_number).toFixed(2)}%`,
+                    diff: getDiffStr(s1.size, s2.size),
                 },
             });
         })();
 
-        need_arr.push(foo);
-        if (need_arr.length > max_cover_files) {
-            await Promise.all(need_arr);
-            need_arr.length = 0;
+        pool.set(id, foo);
+
+        while (true) {
+            if (pool.size < max_cover_files) {
+                break;
+            }
+            await sleep(100);
         }
     }
 
-    await Promise.all(need_arr);
+    const arr: Promise<void>[] = [...pool.values()];
+    await Promise.all(arr);
 
     datas.sort((a, b) => a.id - b.id);
     const timeEnd: number = Date.now();
@@ -127,9 +139,18 @@ export async function img2webpCore(
 
     const excluded: Record<string, unknown[]> = creatExcluded(notNeed);
 
+    const raw_size_n: number = math_sum(datas.map((v) => v.raw.size));
+    const out_size_n: number = math_sum(datas.map((v) => v.out.size));
+
+    const statistics: TStatistics = {
+        raw_size: fmtFileSize(raw_size_n, 2),
+        out_size: fmtFileSize(out_size_n, 2),
+        diff: getDiffStr(raw_size_n, out_size_n),
+    };
+
     const json_report = {
         header: { comment, select },
-        body: { datas },
+        body: { datas, statistics },
         footer: { useMs, selectConfig, excluded },
     } as const;
 
@@ -144,7 +165,7 @@ export async function img2webpCore(
             '',
             '# body',
             '',
-            ...md_body(datas),
+            ...md_body(datas, statistics),
             '',
             '# footer',
             '',

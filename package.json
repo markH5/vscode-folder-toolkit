@@ -125,7 +125,7 @@
                             {
                                 "name": "default:0 quality 80%",
                                 "opt": "-mt -quiet -q 80",
-                                "max_cover_files": 128,
+                                "max_cover_files": 32,
                                 "repors": ["json", "md"],
                                 "allowList": [
                                     ".jpg",
@@ -153,7 +153,7 @@
                             {
                                 "name": "default:1 lossless",
                                 "opt": "-mt -quiet -lossless",
-                                "max_cover_files": 128,
+                                "max_cover_files": 16,
                                 "repors": ["json", "md"],
                                 "allowList": [
                                     ".jpg",
