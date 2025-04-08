@@ -126,7 +126,7 @@
                                 "name": "default:0 quality 80%",
                                 "opt": "-mt -quiet -q 80",
                                 "max_cover_files": 32,
-                                "repors": ["json", "md"],
+                                "repors": ["json"],
                                 "allowList": [
                                     ".jpg",
                                     ".png",

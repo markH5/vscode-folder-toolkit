@@ -2,7 +2,7 @@ import type { THashConfig } from '../../config.hash';
 import type { TBlockRuler } from '../../config.hash.internal';
 import type { TErrorLog, TProgress, TToken } from './def';
 import type { TReport } from './getFileDataCore';
-import { homepage, repository, version } from '../../../package.json';
+import { homepage, version } from '../../../package.json';
 import { getfsPathListEx } from '../../fsTools/getfsPathListEx';
 import { sum } from '../../Math/sum';
 import { creatExcluded } from './creatExcluded';
@@ -40,7 +40,6 @@ export async function getHashCore(
     const comment = {
         version,
         homepage,
-        repository,
     };
 
     const excludedRules = blockList.map((r: TBlockRuler) => ({ name: r.name, reg: r.reg.toString() }));

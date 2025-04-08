@@ -4,7 +4,7 @@ import type { TProgress } from '../getHash/def';
 import type { TData, TStatistics } from './def';
 import { stat } from 'node:fs/promises';
 import * as vscode from 'vscode';
-import { homepage, repository, version } from '../../../package.json';
+import { homepage, version } from '../../../package.json';
 import { getfsPathListEx } from '../../fsTools/getfsPathListEx';
 import { math_sum } from '../../utility/math_sum';
 import { sleep } from '../../utility/sleep';
@@ -139,7 +139,6 @@ export async function img2webpCore(
     const comment = {
         version,
         homepage,
-        repository,
     };
 
     const excluded: Record<string, unknown[]> = creatExcluded(notNeed);
