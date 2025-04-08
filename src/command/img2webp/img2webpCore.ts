@@ -6,11 +6,11 @@ import { stat } from 'node:fs/promises';
 import * as vscode from 'vscode';
 import { homepage, version } from '../../../package.json';
 import { getfsPathListEx } from '../../fsTools/getfsPathListEx';
+import { fmtFileSize } from '../../utility/fmtFileSize';
 import { math_sum } from '../../utility/math_sum';
 import { sleep } from '../../utility/sleep';
 import { exec_plus } from '../exec_plus';
 import { creatExcluded } from '../getHash/creatExcluded';
-import { fmtFileSize } from '../getHash/fmtFileSize';
 import { md_body } from './md/md_body';
 
 function getNeedImg(files: readonly string[], selectConfig: TImg2webp_config): readonly string[] {

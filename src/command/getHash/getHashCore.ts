@@ -5,8 +5,8 @@ import type { TReport } from './getFileDataCore';
 import { homepage, version } from '../../../package.json';
 import { getfsPathListEx } from '../../fsTools/getfsPathListEx';
 import { sum } from '../../Math/sum';
+import { fmtFileSize } from '../../utility/fmtFileSize';
 import { creatExcluded } from './creatExcluded';
-import { fmtFileSize } from './fmtFileSize';
 import { getFileDataCoreEx } from './getFileDataCore';
 import { json2md } from './json2md';
 

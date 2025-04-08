@@ -1,6 +1,6 @@
 import { writeFileSync } from 'node:fs';
 import * as vscode from 'vscode';
-import { fmtFileSize } from './fmtFileSize';
+import { fmtFileSize } from '../../utility/fmtFileSize';
 
 export async function openAndShow(language: 'json' | 'markdown', content: string): Promise<void> {
     if (content.length >= 1024 ** 2) { // 1 MiB

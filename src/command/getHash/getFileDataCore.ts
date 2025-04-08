@@ -8,7 +8,7 @@ import { createHash } from 'node:crypto';
 import { createReadStream, statSync } from 'node:fs';
 import { readFile } from 'node:fs/promises';
 import { chunk } from 'es-toolkit';
-import { fmtFileSize } from './fmtFileSize';
+import { fmtFileSize } from '../../utility/fmtFileSize';
 
 function logErr(errLog: TErrorLog, e: unknown, fsPath: string): string {
     // https://stackoverflow.com/questions/8965606/node-and-error-emfile-too-many-open-files
