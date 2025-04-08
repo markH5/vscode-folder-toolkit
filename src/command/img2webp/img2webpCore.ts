@@ -38,7 +38,6 @@ export async function img2webpCore(
     blockList: readonly TBlockRuler[],
     selectConfig: TImg2webp_config,
     progress: TProgress,
-    // eslint-disable-next-line unused-imports/no-unused-vars
     token: vscode.CancellationToken,
 ): Promise<{
     json_report: unknown,
@@ -53,7 +52,7 @@ export async function img2webpCore(
     const cwebp_opt: string = selectConfig.opt;
     const max_cover_files: number = selectConfig.max_cover_files;
 
-    progress.report({ message: `total has ${need.length} files to calc hash`, increment: 0 });
+    progress.report({ message: `total has ${need.length} img` });
 
     const datas: TData[] = [];
 
@@ -115,6 +114,10 @@ export async function img2webpCore(
         })();
 
         pool.set(id, foo);
+
+        if (token.isCancellationRequested) {
+            return { json_report: {}, markdown: '' };
+        }
 
         while (true) {
             if (pool.size < max_cover_files) {

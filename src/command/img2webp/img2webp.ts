@@ -27,7 +27,10 @@ async function getConfig(): Promise<TImg2webp_config | undefined> {
         }
     }
 
-    type TItem = { label: string, v: TImg2webp_config };
+    type TItem = {
+        label: string,
+        v: TImg2webp_config,
+    };
     const items: TItem[] = Configs.map((v: TImg2webp_config): TItem => ({ label: v.name, v }));
     const config: TItem | undefined = await vscode.window.showQuickPick(items, { title: 'select option' });
     if (config === undefined) return;
@@ -55,7 +58,7 @@ export async function img2webp(_file: vscode.Uri, selectedFiles: vscode.Uri[]): 
         },
         async (progress: TProgress, token: TToken) => {
             token.onCancellationRequested((): void => {
-                vscode.window.showInformationMessage('task is cancel');
+                vscode.window.showInformationMessage('task is cancel!');
             });
             const ans = await img2webpCore(
                 cwebp_Path,
@@ -65,6 +68,9 @@ export async function img2webp(_file: vscode.Uri, selectedFiles: vscode.Uri[]): 
                 progress,
                 token,
             );
+
+            if (token.isCancellationRequested) return;
+
             if (selectConfig.repors.includes('json')) {
                 openAndShow('json', JSON.stringify(ans.json_report, null, 2));
             }
