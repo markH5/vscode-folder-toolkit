@@ -52,9 +52,11 @@ export async function img2webpCore(
     const cwebp_opt: string = selectConfig.opt;
     const max_cover_files: number = selectConfig.max_cover_files;
 
-    progress.report({ message: `total has ${need.length} img` });
+    progress.report({ message: `total has ${need.length} img`, increment: 0 });
 
     const datas: TData[] = [];
+
+    const step: number = 100 / (need.length);
 
     const pool = new Map<number, Promise<void>>();
     let j = 0;
@@ -77,7 +79,7 @@ export async function img2webpCore(
 
             j += 1;
             const message: string = `(${j + 1} of ${need.length}) to webp, "${input_file}"`;
-            progress.report({ message });
+            progress.report({ message, increment: step });
 
             if (exit_code !== 0) {
                 vscode.window.showErrorMessage(`exit_code: ${exit_code},\nFailed to execute command: ${cmd}`);
