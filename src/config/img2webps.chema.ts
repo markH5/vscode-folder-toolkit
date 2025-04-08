@@ -1,10 +1,11 @@
-import { array, number, object, safeParser, string } from 'valibot';
+import { array, literal, number, object, safeParser, string, union } from 'valibot';
 
 export const schema = object({
     name: string(),
     opt: string(),
     allowList: array(string()),
     max_cover_files: number(),
+    repors: array(union([literal('json'), literal('md')])),
     blockList: array(object({
         name: string(),
         reg: string(),

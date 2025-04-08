@@ -65,10 +65,15 @@ export async function img2webp(_file: vscode.Uri, selectedFiles: vscode.Uri[]): 
                 progress,
                 token,
             );
-            openAndShow('json', JSON.stringify(ans.json_report, null, 2));
+            if (selectConfig.repors.includes('json')) {
+                openAndShow('json', JSON.stringify(ans.json_report, null, 2));
+            }
+            if (selectConfig.repors.includes('md')) {
+                openAndShow('markdown', ans.markdown);
+            }
 
             progress.report({ message: 'finish', increment: 100 });
-            //   vscode.window.showInformationMessage('task is finish');
+            vscode.window.showInformationMessage('task is finish');
         },
     );
 }

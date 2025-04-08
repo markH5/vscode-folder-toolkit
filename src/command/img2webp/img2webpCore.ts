@@ -1,6 +1,7 @@
 import type { TBlockRuler } from '../../config.hash.internal';
 import type { TImg2webp_config } from '../../config/img2webp.def';
 import type { TProgress } from '../getHash/def';
+import type { TData } from './def';
 import { stat } from 'node:fs/promises';
 import * as vscode from 'vscode';
 import { homepage, repository, version } from '../../../package.json';
@@ -8,6 +9,7 @@ import { getfsPathListEx } from '../../fsTools/getfsPathListEx';
 import { exec_plus } from '../exec_plus';
 import { creatExcluded } from '../getHash/creatExcluded';
 import { fmtFileSize } from '../getHash/fmtFileSize';
+import { md_body } from './md/md_body';
 
 function getNeedImg(files: readonly string[], selectConfig: TImg2webp_config): readonly string[] {
     const { allowList } = selectConfig;
@@ -33,6 +35,7 @@ export async function img2webpCore(
     token: vscode.CancellationToken,
 ): Promise<{
     json_report: unknown,
+    markdown: string,
 }> {
     const timeStart: number = Date.now();
     const { need: needRaw, notNeed } = getfsPathListEx(select, blockList);
@@ -45,20 +48,6 @@ export async function img2webpCore(
 
     progress.report({ message: `total has ${need.length} files to calc hash`, increment: 0 });
 
-    type TBaseData = {
-        path: string,
-        size: number,
-        sizeS: string,
-    };
-    type TData = {
-        id: number,
-        raw: TBaseData,
-        out: TBaseData,
-        diff: {
-            diff_size: string,
-            diff: `${string}%`,
-        },
-    };
     const datas: TData[] = [];
 
     const step: number = 1 / (need.length);
@@ -77,17 +66,16 @@ export async function img2webpCore(
             j += 1;
             const message: string = `(${j + 1} of ${need.length}) to webp, "${input_file}"`;
             progress.report({ message, increment: step });
+            const raw = {
+                path: input_file,
+                size: s1.size,
+                sizeS: fmtFileSize(s1.size, 2),
+            };
             if (exit_code !== 0) {
-                vscode.window.showErrorMessage(`Failed to execute command: ${cmd}`);
-                vscode.window.showErrorMessage(`exit_code: ${exit_code}`);
-
+                vscode.window.showErrorMessage(`exit_code: ${exit_code},\nFailed to execute command: ${cmd}`);
                 datas.push({
                     id,
-                    raw: {
-                        path: input_file,
-                        size: s1.size,
-                        sizeS: fmtFileSize(s1.size, 2),
-                    },
+                    raw,
                     out: {
                         path: output_file,
                         size: Number.NaN,
@@ -95,7 +83,7 @@ export async function img2webpCore(
                     },
                     diff: {
                         diff_size: 'NaN',
-                        diff: 'unknown %',
+                        diff: '+ unknown %',
                     },
                 });
                 return;
@@ -105,11 +93,7 @@ export async function img2webpCore(
             const diff_number = 100 * (s1.size - s2.size) / s1.size;
             datas.push({
                 id,
-                raw: {
-                    path: input_file,
-                    size: s1.size,
-                    sizeS: fmtFileSize(s1.size, 2),
-                },
+                raw,
                 out: {
                     path: output_file,
                     size: s2.size,
@@ -117,7 +101,7 @@ export async function img2webpCore(
                 },
                 diff: {
                     diff_size: fmtFileSize(s1.size - s2.size, 2),
-                    diff: `${diff_number > 0 ? '+' : '-'} ${Math.abs(diff_number).toFixed(2)}%`,
+                    diff: `${diff_number < 0 ? '+' : '-'} ${Math.abs(diff_number).toFixed(2)}%`,
                 },
             });
         })();
@@ -144,12 +128,34 @@ export async function img2webpCore(
     const excluded: Record<string, unknown[]> = creatExcluded(notNeed);
 
     const json_report = {
-        header: { comment, select, selectConfig },
+        header: { comment, select },
         body: { datas },
-        footer: { useMs, excluded },
+        footer: { useMs, selectConfig, excluded },
     } as const;
+
+    const md_arr: string[] = [];
+    if (selectConfig.repors.includes('md')) {
+        md_arr.push(
+            '# header',
+            '',
+            '```json',
+            JSON.stringify(json_report.header, null, 2),
+            '```',
+            '',
+            '# body',
+            '',
+            ...md_body(datas),
+            '',
+            '# footer',
+            '',
+            '```json',
+            JSON.stringify(json_report.footer, null, 2),
+            '```',
+        );
+    }
 
     return {
         json_report,
+        markdown: md_arr.join('\n'),
     };
 }
