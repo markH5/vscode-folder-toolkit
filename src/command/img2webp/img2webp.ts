@@ -1,4 +1,3 @@
-import type { TBlock } from '../../config.hash';
 import type { TBlockRuler } from '../../config.hash.internal';
 import type { TImg2webp_config } from '../../config/img2webp.def';
 import type { TProgress, TToken } from '../getHash/def';
@@ -22,7 +21,6 @@ async function getConfig(): Promise<TImg2webp_config | undefined> {
         const c = safeParserConfig_1(config);
         if (!c.success) {
             vscode.window.showErrorMessage(`${name}.${section} some config is invalid`);
-            // openAndShow('json', JSON.stringify(c.issues, null, 2));
             return;
         }
     }
@@ -48,7 +46,7 @@ export async function img2webp(_file: vscode.Uri, selectedFiles: vscode.Uri[]): 
 
     const { blockList } = selectConfig;
     const blockListRun: readonly TBlockRuler[] = blockList
-        .map((r: TBlock): TBlockRuler => ({ name: r.name, reg: new RegExp(r.reg, r.flag) }));
+        .map((reg: string): TBlockRuler => ({ name: reg, reg: new RegExp(reg) }));
 
     vscode.window.withProgress(
         {
@@ -72,7 +70,7 @@ export async function img2webp(_file: vscode.Uri, selectedFiles: vscode.Uri[]): 
             if (token.isCancellationRequested) return;
 
             if (selectConfig.repors.includes('json')) {
-                openAndShow('json', JSON.stringify(ans.json_report, null, 2));
+                openAndShow('json', JSON.stringify(ans.json_report, null, '\t'));
             }
             if (selectConfig.repors.includes('md')) {
                 openAndShow('markdown', ans.markdown);

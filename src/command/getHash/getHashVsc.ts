@@ -1,4 +1,4 @@
-import type { TBlock, THashConfig } from '../../config.hash';
+import type { THashConfig } from '../../config.hash';
 import type { TBlockRuler } from '../../config.hash.internal';
 import type { TProgress, TToken } from './def';
 import type { THashReport } from './getHashCore';
@@ -21,7 +21,7 @@ async function getConfig(): Promise<THashConfig | undefined> {
         const c = safeParserConfig0(config);
         if (!c.success) {
             vscode.window.showErrorMessage(`${name}.${section} some config is invalid`);
-            openAndShow('json', JSON.stringify(c.issues, null, 2));
+            openAndShow('json', JSON.stringify(c.issues, null, '\t'));
             return;
         }
     }
@@ -41,7 +41,7 @@ export async function getHashVsc(_file: vscode.Uri, selectedFiles: vscode.Uri[])
 
     const { blockList } = selectConfig;
     const blockListRun: readonly TBlockRuler[] = blockList
-        .map((r: TBlock): TBlockRuler => ({ name: r.name, reg: new RegExp(r.reg, r.flag) }));
+        .map((reg: string): TBlockRuler => ({ name: reg, reg: new RegExp(reg) }));
 
     vscode.window.withProgress(
         {
@@ -64,8 +64,8 @@ export async function getHashVsc(_file: vscode.Uri, selectedFiles: vscode.Uri[])
             const { report } = selectConfig;
             if (report === 'json' || report === 'both') {
                 const { json } = ans;
-                ans.json = '';
-                openAndShow('json', json);
+                openAndShow('json', JSON.stringify(json, null, '\t'));
+                ans.json = {};
             }
             if (report === 'md' || report === 'both') {
                 const { md } = ans;
@@ -76,7 +76,7 @@ export async function getHashVsc(_file: vscode.Uri, selectedFiles: vscode.Uri[])
             if (Object.keys(ans.errLog).length > 0) {
                 const { errLog } = ans;
                 ans.errLog = {};
-                openAndShow('json', JSON.stringify(errLog, null, 4));
+                openAndShow('json', JSON.stringify(errLog, null, '\t'));
             }
 
             progress.report({ message: 'finish', increment: 100 });

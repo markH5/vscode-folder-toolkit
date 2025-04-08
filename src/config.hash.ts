@@ -20,7 +20,7 @@ export type THashConfig = {
      * 6. There are a lot of files larger than 1 MiB , suggest `10 <=number <= 1280`.
      */
     maxOpenFiles: number,
-    blockList: TBlock[],
+    blockList: string[],
 };
 
 export type THashConfigList = THashConfig[];

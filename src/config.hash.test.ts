@@ -1,7 +1,6 @@
 /* eslint-disable sonarjs/no-unused-vars */
 import type { InferOutput } from 'valibot';
 import type { THashConfig } from './config.hash';
-import type { TBlockRuler } from './config.hash.internal';
 import type { TSchema } from './config.hash.schema';
 import { assertType, expect, it } from 'vitest';
 import { contributes } from '../package.json';
@@ -31,18 +30,9 @@ it('check config-0 fake input', (): void => {
             'md',
         ],
         'blockList': [
-            {
-                'name': 'not node_modules',
-                'reg': '\\/node_modules(?:\\/|$)',
-            },
-            {
-                'name': 'not .git',
-                'reg': '\\/\\.git(?:\\/|$)',
-            },
-            {
-                'name': 'not .svn',
-                'reg': '\\/\\.svn(?:\\/|$)',
-            },
+            '\\/node_modules(?:\\/|$)',
+            '\\/\\.git(?:\\/|$)',
+            '\\/\\.svn(?:\\/|$)',
         ],
     };
 
@@ -52,10 +42,7 @@ it('check config-0 fake input', (): void => {
 
 {
     // check type in tsc
-    type TBlockRuler_shouldBe = Readonly<Omit<THashConfig['blockList'][number], 'reg' | 'flag'> & { reg: RegExp }>;
-
     type THashConfig_valibot = InferOutput<TSchema>;
 
-    const _test_1: IsEqual<TBlockRuler_shouldBe, TBlockRuler> = true;
     const _test_2: IsEqual<THashConfig_valibot, THashConfig> = true;
 }

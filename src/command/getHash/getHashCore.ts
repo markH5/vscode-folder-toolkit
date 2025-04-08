@@ -11,7 +11,7 @@ import { getFileDataCoreEx } from './getFileDataCore';
 import { json2md } from './json2md';
 
 export type THashReport = {
-    json: string,
+    json: object,
     md: string,
     errLog: TErrorLog,
 };
@@ -42,7 +42,7 @@ export async function getHashCore(
         homepage,
     };
 
-    const excludedRules = blockList.map((r: TBlockRuler) => ({ name: r.name, reg: r.reg.toString() }));
+    const excludedRules = blockList.map((r: TBlockRuler) => r.reg.source);
     const excluded: Record<string, unknown[]> = creatExcluded(notNeed);
 
     const json = {
@@ -52,7 +52,7 @@ export async function getHashCore(
     } as const;
 
     return {
-        json: JSON.stringify(json, null, 4),
+        json,
         md: json2md(datas, json),
         errLog,
     };

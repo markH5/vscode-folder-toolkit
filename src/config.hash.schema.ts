@@ -5,13 +5,7 @@ const schema = object({
     fn: union([literal('sha1'), literal('sha256'), literal('md5')]),
     report: union([literal('json'), literal('md'), literal('both')]),
     maxOpenFiles: pipe(number(), toMinValue(1)),
-    blockList: array(
-        object({
-            name: string(),
-            reg: string(),
-            flag: string(),
-        }),
-    ),
+    blockList: array(string()),
 });
 
 export type TSchema = typeof schema;

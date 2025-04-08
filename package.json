@@ -55,21 +55,9 @@
                                 "report": "both",
                                 "maxOpenFiles": 5120,
                                 "blockList": [
-                                    {
-                                        "name": "not node_modules",
-                                        "reg": "\\/node_modules(?:\\/|$)",
-                                        "flag": "v"
-                                    },
-                                    {
-                                        "name": "not .git",
-                                        "reg": "\\/\\.git(?:\\/|$)",
-                                        "flag": "v"
-                                    },
-                                    {
-                                        "name": "not .svn",
-                                        "reg": "\\/\\.svn(?:\\/|$)",
-                                        "flag": "v"
-                                    }
+                                    "\\/node_modules(?:\\/|$)",
+                                    "\\/\\.git(?:\\/|$)",
+                                    "\\/\\.svn(?:\\/|$)"
                                 ]
                             },
                             {
@@ -78,21 +66,9 @@
                                 "report": "both",
                                 "maxOpenFiles": 5120,
                                 "blockList": [
-                                    {
-                                        "name": "not node_modules",
-                                        "reg": "\\/node_modules(?:\\/|$)",
-                                        "flag": "v"
-                                    },
-                                    {
-                                        "name": "not .git",
-                                        "reg": "\\/\\.git(?:\\/|$)",
-                                        "flag": "v"
-                                    },
-                                    {
-                                        "name": "not .svn",
-                                        "reg": "\\/\\.svn(?:\\/|$)",
-                                        "flag": "v"
-                                    }
+                                    "\\/node_modules(?:\\/|$)",
+                                    "\\/\\.git(?:\\/|$)",
+                                    "\\/\\.svn(?:\\/|$)"
                                 ]
                             }
                         ],
@@ -109,9 +85,9 @@
                         "type": "array",
                         "default": [
                             "C:\\<your_path>\\libwebp\\bin\\cwebp.exe",
-                            "/usr/bin/libwebp/bin/cwebp",
-                            "/usr/local/bin/libwebp/bin/cwebp",
-                            "/usr/local/Cellar/libwebp/1.5.0/bin/cwebp"
+                            "/usr/bin/<your_libwebp>/bin/cwebp",
+                            "/usr/local/bin/<your_libwebp>/bin/cwebp",
+                            "/usr/local/Cellar/<your_libwebp>/1.5.0/bin/cwebp"
                         ],
                         "items": {
                             "type": "string"
@@ -133,21 +109,9 @@
                                     ".tif"
                                 ],
                                 "blockList": [
-                                    {
-                                        "name": "not node_modules",
-                                        "reg": "\\/node_modules(?:\\/|$)",
-                                        "flag": "v"
-                                    },
-                                    {
-                                        "name": "not .git",
-                                        "reg": "\\/\\.git(?:\\/|$)",
-                                        "flag": "v"
-                                    },
-                                    {
-                                        "name": "not .svn",
-                                        "reg": "\\/\\.svn(?:\\/|$)",
-                                        "flag": "v"
-                                    }
+                                    "\\/node_modules(?:\\/|$)",
+                                    "\\/\\.git(?:\\/|$)",
+                                    "\\/\\.svn(?:\\/|$)"
                                 ]
                             },
                             {
@@ -161,21 +125,9 @@
                                     ".tif"
                                 ],
                                 "blockList": [
-                                    {
-                                        "name": "not node_modules",
-                                        "reg": "\\/node_modules(?:\\/|$)",
-                                        "flag": "v"
-                                    },
-                                    {
-                                        "name": "not .git",
-                                        "reg": "\\/\\.git(?:\\/|$)",
-                                        "flag": "v"
-                                    },
-                                    {
-                                        "name": "not .svn",
-                                        "reg": "\\/\\.svn(?:\\/|$)",
-                                        "flag": "v"
-                                    }
+                                    "\\/node_modules(?:\\/|$)",
+                                    "\\/\\.git(?:\\/|$)",
+                                    "\\/\\.svn(?:\\/|$)"
                                 ]
                             }
                         ],

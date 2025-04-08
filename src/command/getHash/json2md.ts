@@ -11,7 +11,7 @@ export function json2md(datas: readonly TReport[], json: TJSON): string {
         '## head ',
         '',
         '```json',
-        JSON.stringify(json.header, null, 4),
+        JSON.stringify(json.header, null, '\t'),
         '```',
         '',
         '## body ',
@@ -60,7 +60,7 @@ export function json2md(datas: readonly TReport[], json: TJSON): string {
         '## footer ',
         '',
         '```json',
-        JSON.stringify(json.footer, null, 4),
+        JSON.stringify(json.footer, null, '\t'),
         '```',
     );
 

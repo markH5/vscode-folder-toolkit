@@ -6,11 +6,7 @@ export const schema = object({
     allowList: array(string()),
     max_cover_files: number(),
     repors: array(union([literal('json'), literal('md')])),
-    blockList: array(object({
-        name: string(),
-        reg: string(),
-        flag: string(),
-    })),
+    blockList: array(string()),
 });
 
 export type TSchema = typeof schema;

@@ -48,7 +48,6 @@ export async function img2webpCore(
 
     const need: readonly string[] = getNeedImg(needRaw, selectConfig);
 
-    // const cwebp_opt: string = JSON.stringify(selectConfig.opt);
     const cwebp_opt: string = selectConfig.opt;
     const max_cover_files: number = selectConfig.max_cover_files;
 
@@ -164,7 +163,7 @@ export async function img2webpCore(
             '# header',
             '',
             '```json',
-            JSON.stringify(json_report.header, null, 2),
+            JSON.stringify(json_report.header, null, '\t'),
             '```',
             '',
             '# body',
@@ -174,7 +173,7 @@ export async function img2webpCore(
             '# footer',
             '',
             '```json',
-            JSON.stringify(json_report.footer, null, 2),
+            JSON.stringify(json_report.footer, null, '\t'),
             '```',
         );
     }
