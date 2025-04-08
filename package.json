@@ -2,7 +2,7 @@
     "publisher": "cat1122",
     "name": "vscode-folder-toolkit",
     "displayName": "vscode-folder-toolkit",
-    "version": "0.0.4",
+    "version": "0.0.5",
     "packageManager": "pnpm@10.2.0",
     "description": "Quickly calculate the hash of each file in the folder",
     "author": "Coffee Chaton(https://github.com/CoffeeChaton)",
@@ -102,7 +102,7 @@
                                 "name": "default:0 quality 80%",
                                 "opt": "-mt -quiet -q 80",
                                 "max_cover_files": 32,
-                                "repors": ["json"],
+                                "repors": ["md"],
                                 "allowList": [
                                     ".jpg",
                                     ".png",
