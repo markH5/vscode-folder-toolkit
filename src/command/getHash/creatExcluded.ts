@@ -4,7 +4,9 @@ export function creatExcluded(notNeed: TNotNeed): Record<string, unknown[]> {
     const excluded: Record<string, TNotNeedValue[]> = {};
 
     for (const [k, rawV] of notNeed) {
-        excluded[k] = rawV;
+        const aaa = excluded[k] ?? [];
+        aaa.push(...rawV);
+        excluded[k] = aaa;
     }
 
     return excluded;
