@@ -36,7 +36,6 @@ export function CollectorFsPathEx(
             if (blockRuler === undefined) {
                 CollectorFsPathEx(fsPathNext, blockList, need, notNeed, root);
             } else {
-                console.log('fsPathNext', { fsPathNext });
                 const rejectArr = notNeed.get(blockRuler.name) ?? [];
                 rejectArr.push({
                     fullPath: fsPathNext,

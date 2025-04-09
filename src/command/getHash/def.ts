@@ -1,4 +1,5 @@
 import type * as vscode from 'vscode';
+import type { TReport } from './getFileDataCore';
 
 export type TProgress = vscode.Progress<{
     message: string,
@@ -14,10 +15,16 @@ type TErrMsg = {
 
 export type TErrorLog = Record<string, TErrMsg[]>;
 
+export type TStatistics = {
+    msg: string,
+    report: Record<string, string[]>,
+};
+
 export type TJSON = {
     header: unknown,
     body: {
         datas: readonly TReport[],
+        statistics: TStatistics,
     },
     footer: unknown,
 };

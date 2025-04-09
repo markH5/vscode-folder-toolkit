@@ -2,7 +2,7 @@ import type { TJSON } from './def';
 import type { TReport } from './getFileDataCore';
 
 export function json2md(json: TJSON): string {
-    const datas: readonly TReport[] = json.body.datas;
+    const { datas, statistics } = json.body;
 
     const arr: string[] = [
         '## head ',
@@ -12,6 +12,8 @@ export function json2md(json: TJSON): string {
         '```',
         '',
         '## body ',
+        '',
+        '### datas',
         '',
     ];
 
@@ -48,6 +50,23 @@ export function json2md(json: TJSON): string {
         arr.push(
             `| ${c0} | ${c1} | ${c2} | ${c3} |`,
         );
+    }
+
+    arr.push(
+        '',
+        '### statistics',
+        ''
+    );
+    for (const [k_hash_val, path_list] of Object.entries(statistics.report)) {
+        arr.push(
+            "",
+            `- ${k_hash_val}`
+        );
+        for (const path of path_list) {
+            arr.push(
+                `  - ${path}`
+            );
+        }
     }
 
     arr.push(

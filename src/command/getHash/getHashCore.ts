@@ -7,6 +7,7 @@ import { getfsPathListEx } from '../../fsTools/getfsPathListEx';
 import { sum } from '../../Math/sum';
 import { fmtFileSize } from '../../utility/fmtFileSize';
 import { creatExcluded } from '../share/creatExcluded';
+import { get_statistics_report } from './get_statistics_report';
 import { getFileDataCoreEx } from './getFileDataCore';
 
 export type THashReport = {
@@ -42,11 +43,14 @@ export async function getHashCore(
 
     const excluded: Record<string, unknown[]> = creatExcluded(notNeed);
 
-    const json = {
+    const json: TJSON = {
         header: { comment, select },
-        body: { datas },
+        body: {
+            datas,
+            statistics: get_statistics_report(datas),
+        },
         footer: { useMs, totalSize, totalFile, selectConfig, excluded },
-    } as const;
+    };
 
     return {
         json,
