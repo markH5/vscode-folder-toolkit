@@ -10,7 +10,7 @@ import { fmtFileSize } from '../../utility/fmtFileSize';
 import { math_sum } from '../../utility/math_sum';
 import { sleep } from '../../utility/sleep';
 import { exec_plus } from '../exec_plus';
-import { creatExcluded } from '../getHash/creatExcluded';
+import { creatExcluded } from '../share/creatExcluded';
 import { md_body } from './md/md_body';
 
 function getNeedImg(files: readonly string[], selectConfig: TImg2webp_config): readonly string[] {

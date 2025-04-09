@@ -4,7 +4,7 @@ import type { TProgress, TToken } from '../getHash/def';
 import * as vscode from 'vscode';
 import { name } from '../../../package.json';
 import { safeParserConfig_1 } from '../../config/img2webps.chema';
-import { openAndShow } from '../getHash/openAndShow';
+import { openAndShow } from '../share/openAndShow';
 import { get_cwebp_Path } from './get_cwebp_Path';
 import { img2webpCore } from './img2webpCore';
 

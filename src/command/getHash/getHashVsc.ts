@@ -5,9 +5,9 @@ import type { THashReport } from './getHashCore';
 import * as vscode from 'vscode';
 import { name } from '../../../package.json';
 import { safeParserConfig0 } from '../../config.hash.schema';
+import { openAndShow } from '../share/openAndShow';
 import { getHashCore } from './getHashCore';
 import { json2md } from './json2md';
-import { openAndShow } from './openAndShow';
 
 async function getConfig(): Promise<THashConfig | undefined> {
     const allConfig = vscode.workspace.getConfiguration(name);

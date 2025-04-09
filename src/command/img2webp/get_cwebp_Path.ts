@@ -2,7 +2,7 @@ import { existsSync } from 'node:fs';
 import * as vscode from 'vscode';
 import { name } from '../../../package.json';
 import { N } from '../../fsTools/N';
-import { openAndShow } from '../getHash/openAndShow';
+import { openAndShow } from '../share/openAndShow';
 
 export function get_cwebp_Path(): string | undefined {
     const allConfig: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration(name);

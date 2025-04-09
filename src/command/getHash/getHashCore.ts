@@ -6,7 +6,7 @@ import { homepage, version } from '../../../package.json';
 import { getfsPathListEx } from '../../fsTools/getfsPathListEx';
 import { sum } from '../../Math/sum';
 import { fmtFileSize } from '../../utility/fmtFileSize';
-import { creatExcluded } from './creatExcluded';
+import { creatExcluded } from '../share/creatExcluded';
 import { getFileDataCoreEx } from './getFileDataCore';
 
 export type THashReport = {
