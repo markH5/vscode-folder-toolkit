@@ -1,12 +1,9 @@
+import type { TJSON } from './def';
 import type { TReport } from './getFileDataCore';
 
-type TJSON = {
-    header: unknown,
-    body: unknown,
-    footer: unknown,
-};
+export function json2md(json: TJSON): string {
+    const datas: readonly TReport[] = json.body.datas;
 
-export function json2md(datas: readonly TReport[], json: TJSON): string {
     const arr: string[] = [
         '## head ',
         '',
@@ -18,40 +15,38 @@ export function json2md(datas: readonly TReport[], json: TJSON): string {
         '',
     ];
 
-    const ln1: number = Math.max(...datas.map((v: TReport): number => v.path.length));
-    const ln2: number = Math.max(...datas.map((v: TReport): number => v.size.length));
-    const ln3: number = Math.max(...datas.map((v: TReport): number => v.Bytes.toString().length));
-    const ln4: number = datas[0].hash.v.length;
-    // const ln5: number = datas[0].mTime.length;
+    const ln0: number = datas[0].hash.v.length;
+    const ln1: number = Math.max(...datas.map((v: TReport): number => v.size.length));
+    const ln2: number = Math.max(...datas.map((v: TReport): number => v.Bytes.toString().length));
+    const ln3: number = Math.max(...datas.map((v: TReport): number => v.path.length));
+
     {
-        const a1: string = 'path'.padEnd(ln1);
-        const a2: string = 'size'.padStart(ln2);
-        const a3: string = 'Bytes'.padStart(ln3);
-        const a4: string = `hash(\`${datas[0].hash.k}\`)`.padStart(ln4 + 2); // warp with "``".len === 2
-        // const a5: string = 'mTime'.padStart(ln5);
-        const n1: string = ':-'.padEnd(ln1, '-');
+        const a0: string = `hash(\`${datas[0].hash.k}\`)`.padStart(ln0);
+        const a1: string = 'size'.padStart(ln1);
+        const a2: string = 'Bytes'.padStart(ln2);
+        const a3: string = 'path'.padEnd(ln3);
+
+        const n0: string = '-:'.padStart(ln0, '-');
+        const n1: string = '-:'.padStart(ln1, '-');
         const n2: string = '-:'.padStart(ln2, '-');
-        const n3: string = '-:'.padStart(ln3, '-');
-        const n4: string = '-:'.padStart(ln4 + 2, '-');
-        // const n5: string = '-:'.padStart(ln5, '-');
+        const n3: string = ':-'.padEnd(ln3, '-');
+
         arr.push(
             '',
-            // `| path | size | Bytes | hash(`xxh64`) | mitime |`,
-            // `| :--- | ---: | -----: | ---: | ---: |`,
-            `| ${a1} | ${a2} | ${a3} | ${a4} |`,
-            `| ${n1} | ${n2} | ${n3} | ${n4} |`,
+            `| ${a0} | ${a1} | ${a2} | ${a3} |`,
+            `| ${n0} | ${n1} | ${n2} | ${n3} |`,
         );
     }
 
     for (const d of datas) {
         const { path, size, Bytes, hash } = d;
-        const c1: string = path.padEnd(ln1);
-        const c2: string = size.padStart(ln2);
-        const c3: string = Bytes.toString().padStart(ln3);
-        const c4: string = `\`${hash.v}\``;
-        // const c5: string = mTime;
+        const c0: string = hash.v;
+        const c1: string = size.padStart(ln1);
+        const c2: string = Bytes.toString().padStart(ln2);
+        const c3: string = path.padEnd(ln3);
+
         arr.push(
-            `| ${c1} | ${c2} | ${c3} | ${c4} |`,
+            `| ${c0} | ${c1} | ${c2} | ${c3} |`,
         );
     }
 

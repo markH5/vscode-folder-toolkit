@@ -1,6 +1,6 @@
 import type { THashConfig } from '../../config.hash';
 import type { TBlockRuler } from '../../config.hash.internal';
-import type { TErrorLog, TProgress, TToken } from './def';
+import type { TErrorLog, TJSON, TProgress, TToken } from './def';
 import type { TReport } from './getFileDataCore';
 import { homepage, version } from '../../../package.json';
 import { getfsPathListEx } from '../../fsTools/getfsPathListEx';
@@ -8,11 +8,9 @@ import { sum } from '../../Math/sum';
 import { fmtFileSize } from '../../utility/fmtFileSize';
 import { creatExcluded } from './creatExcluded';
 import { getFileDataCoreEx } from './getFileDataCore';
-import { json2md } from './json2md';
 
 export type THashReport = {
-    json: object,
-    md: string,
+    json: TJSON,
     errLog: TErrorLog,
 };
 
@@ -42,18 +40,16 @@ export async function getHashCore(
         homepage,
     };
 
-    const excludedRules = blockList.map((r: TBlockRuler) => r.reg.source);
     const excluded: Record<string, unknown[]> = creatExcluded(notNeed);
 
     const json = {
-        header: { comment, select, selectConfig },
+        header: { comment, select },
         body: { datas },
-        footer: { useMs, totalSize, totalFile, excludedRules, excluded },
+        footer: { useMs, totalSize, totalFile, selectConfig, excluded },
     } as const;
 
     return {
         json,
-        md: json2md(datas, json),
         errLog,
     };
 }

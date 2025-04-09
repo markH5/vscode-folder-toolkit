@@ -8,7 +8,6 @@ export function findBlockRuler(fsPath: string, blockList: readonly TBlockRuler[]
 
 export type TNotNeedValue = {
     fullPath: string,
-    ruler: TBlockRuler,
     root: string,
 };
 
@@ -40,7 +39,6 @@ export function CollectorFsPathEx(
                 const rejectArr = notNeed.get(needCheckPath) ?? [];
                 rejectArr.push({
                     fullPath: fsPathNext,
-                    ruler: blockRuler,
                     root,
                 });
                 notNeed.set(blockRuler.name, rejectArr);

@@ -6,6 +6,7 @@ import * as vscode from 'vscode';
 import { name } from '../../../package.json';
 import { safeParserConfig0 } from '../../config.hash.schema';
 import { getHashCore } from './getHashCore';
+import { json2md } from './json2md';
 import { openAndShow } from './openAndShow';
 
 async function getConfig(): Promise<THashConfig | undefined> {
@@ -26,7 +27,10 @@ async function getConfig(): Promise<THashConfig | undefined> {
         }
     }
 
-    type TItem = { label: string, v: THashConfig };
+    type TItem = {
+        label: string,
+        v: THashConfig,
+    };
     const items: TItem[] = Configs.map((v: THashConfig): TItem => ({ label: `${v.name}(${v.fn}/${v.report})`, v }));
     const config: TItem | undefined = await vscode.window.showQuickPick(items, { title: 'report style' });
     if (config === undefined) return;
@@ -65,12 +69,10 @@ export async function getHashVsc(_file: vscode.Uri, selectedFiles: vscode.Uri[])
             if (report === 'json' || report === 'both') {
                 const { json } = ans;
                 openAndShow('json', JSON.stringify(json, null, '\t'));
-                ans.json = {};
             }
+
             if (report === 'md' || report === 'both') {
-                const { md } = ans;
-                ans.md = '';
-                openAndShow('markdown', md);
+                openAndShow('markdown', json2md(ans.json));
             }
 
             if (Object.keys(ans.errLog).length > 0) {
