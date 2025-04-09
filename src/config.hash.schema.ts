@@ -5,6 +5,7 @@ const schema = object({
     fn: union([literal('sha1'), literal('sha256'), literal('md5')]),
     report: union([literal('json'), literal('md'), literal('both')]),
     maxOpenFiles: pipe(number(), toMinValue(1)),
+    minCollisionValueToShow: pipe(number(), toMinValue(1)),
     blockList: array(string()),
 });
 

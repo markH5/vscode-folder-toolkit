@@ -2,7 +2,7 @@
     "publisher": "cat1122",
     "name": "vscode-folder-toolkit",
     "displayName": "vscode-folder-toolkit",
-    "version": "0.0.7",
+    "version": "0.0.9",
     "packageManager": "pnpm@10.2.0",
     "description": "Quickly calc hash of each file in the folder, or cover img to webp.",
     "author": "Coffee Chaton(https://github.com/CoffeeChaton)",
@@ -52,10 +52,11 @@
                         "type": "array",
                         "default": [
                             {
-                                "name": "default:0 not git/node_modules",
+                                "name": "default:0 suggest",
                                 "fn": "md5",
-                                "report": "both",
+                                "report": "md",
                                 "maxOpenFiles": 5120,
+                                "minCollisionValueToShow": 5,
                                 "blockList": [
                                     "\\/node_modules(?:\\/|$)",
                                     "\\/\\.git(?:\\/|$)",
@@ -63,10 +64,23 @@
                                 ]
                             },
                             {
-                                "name": "default:1 not git/node_modules",
+                                "name": "default:1",
                                 "fn": "sha1",
                                 "report": "both",
                                 "maxOpenFiles": 5120,
+                                "minCollisionValueToShow": 1,
+                                "blockList": [
+                                    "\\/node_modules(?:\\/|$)",
+                                    "\\/\\.git(?:\\/|$)",
+                                    "\\/\\.svn(?:\\/|$)"
+                                ]
+                            },
+                            {
+                                "name": "default:2",
+                                "fn": "md5",
+                                "report": "both",
+                                "maxOpenFiles": 5120,
+                                "minCollisionValueToShow": 1,
                                 "blockList": [
                                     "\\/node_modules(?:\\/|$)",
                                     "\\/\\.git(?:\\/|$)",

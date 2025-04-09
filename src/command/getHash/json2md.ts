@@ -55,16 +55,19 @@ export function json2md(json: TJSON): string {
     arr.push(
         '',
         '### statistics',
-        ''
+        '',
+        statistics.msg.join('\n'),
+        '',
     );
+
     for (const [k_hash_val, path_list] of Object.entries(statistics.report)) {
         arr.push(
-            "",
-            `- ${k_hash_val}`
+            '',
+            `- ${k_hash_val}`,
         );
         for (const path of path_list) {
             arr.push(
-                `  - ${path}`
+                `  - ${path}`,
             );
         }
     }

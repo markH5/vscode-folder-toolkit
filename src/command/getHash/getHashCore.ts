@@ -47,7 +47,7 @@ export async function getHashCore(
         header: { comment, select },
         body: {
             datas,
-            statistics: get_statistics_report(datas),
+            statistics: get_statistics_report(datas, selectConfig),
         },
         footer: { useMs, totalSize, totalFile, selectConfig, excluded },
     };

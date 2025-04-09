@@ -16,7 +16,7 @@ type TErrMsg = {
 export type TErrorLog = Record<string, TErrMsg[]>;
 
 export type TStatistics = {
-    msg: string,
+    msg: string[],
     report: Record<string, string[]>,
 };
 
