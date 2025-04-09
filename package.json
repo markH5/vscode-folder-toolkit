@@ -2,7 +2,7 @@
     "publisher": "cat1122",
     "name": "vscode-folder-toolkit",
     "displayName": "vscode-folder-toolkit",
-    "version": "0.0.6",
+    "version": "0.0.7",
     "packageManager": "pnpm@10.2.0",
     "description": "Quickly calc hash of each file in the folder, or cover img to webp.",
     "author": "Coffee Chaton(https://github.com/CoffeeChaton)",
